@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qulei.dao.ConsumptionDetailDao">
+
+    <sql id="Base_column">
+        CONSUMP_ID,USER_ID,EXPENSE,CONSUMP_TYPE,CONSUMP_DESC,CONSUMP_DATE,CREATE_TIME
+    </sql>
+
+    <!--插入数据-->
+    <insert id="addConsumptionDetail" parameterType="ConsumptionDetail">
+        INSERT INTO CONSUMPTION_DETAIL (consump_id,user_id,expense,consump_type,consump_desc,consump_date,create_time)
+        VALUES
+        (#{consump_id},#{user_id},#{expense},#{consump_type},#{consump_desc},#{consump_date},#{create_time})
+    </insert>
+
+
+    <!--根据条件查询消费记录列表-->
+    <select id="getConsumptionDetail" parameterType="ConsumptionDetailDto" resultType="ConsumptionDetail">
+        SELECT <include refid="Base_column"/> FROM CONSUMPTION_DETAIL
+        WHERE 1=1
+        <if test="min_expense!=null">AND expense &gt;= #{min_expense}</if>
+        <if test="max_expense!=null">AND expense &lt;= #{max_expense}</if>
+        <if test="start_time!=null">AND  consump_date &gt;= #{start_time}</if>
+        <if test="end_time!=null ">AND consump_date &lt;= #{end_time}</if>
+        AND user_id=#{user_id}
+        ORDER BY consump_date DESC LIMIT #{startIndex},10
+    </select>
+
+    <select id="getConsumptionDetailListSize" parameterType="ConsumptionDetailDto" resultType="Integer">
+        SELECT COUNT(1) FROM  CONSUMPTION_DETAIL
+        WHERE 1=1
+        <if test="min_expense!=null">AND expense &gt;= #{min_expense}</if>
+        <if test="max_expense!=null">AND expense &lt;= #{max_expense}</if>
+        <if test="start_time!=null">AND  consump_date &gt;= #{start_time}</if>
+        <if test="end_time!=null ">AND consump_date &lt;= #{end_time}</if>
+        AND user_id=#{user_id}
+    </select>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qulei.dao.ConsumptionDailyDao">
+
+    <sql id="Base_column">
+        ID,USER_ID,EXPENSE,CONSUMP_DATE,IS_OVER
+    </sql>
+
+    <!--根据条件查询消费记录列表-->
+    <select id="getConsumptionDetail" parameterType="ConsumptionDetailDto" resultType="ConsumptionDetail">
+        SELECT <include refid="Base_column"/> FROM CONSUMPTION_DAILY
+        WHERE 1=1
+        <if test="min_expense!=null">AND expense &gt;= #{min_expense}</if>
+        <if test="max_expense!=null">AND expense &lt;= #{max_expense}</if>
+        <if test="start_time!=null">AND  consump_date &gt;= #{start_time}</if>
+        <if test="end_time!=null ">AND consump_date &lt;= #{end_time}</if>
+        <if test="user_id!=null and user_id!='' ">AND user_id=#{user_id}</if>
+        <if test="is_over!=null">AND is_over=#{is_over}</if>
+        ORDER BY consump_date DESC
+    </select>
+
+</mapper>
