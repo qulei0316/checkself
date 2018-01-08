@@ -14,11 +14,8 @@ public class ConsumptionDailyDto {
     //是否超标
     private Integer is_over;
 
-    //最小金额
-    private Integer min_expense;
-
-    //最大金额
-    private Integer max_expense;
+    //金额范围
+    private Integer expense_range;
 
     //起始时间
     private Long start_time;
@@ -31,4 +28,7 @@ public class ConsumptionDailyDto {
 
     //每页条数
     private Integer pageSize;
+
+    //起始位置
+    private Integer startIndex;
 }

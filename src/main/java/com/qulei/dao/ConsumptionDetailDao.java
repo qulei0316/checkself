@@ -2,6 +2,7 @@ package com.qulei.dao;
 
 import com.qulei.entity.bean.ConsumptionDetail;
 import com.qulei.entity.dto.ConsumptionDetailDto;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ public interface ConsumptionDetailDao {
 
     //查询记录总数
     Integer getConsumptionDetailListSize(ConsumptionDetailDto detailDto);
+
+    //查询当前记录
+    List<ConsumptionDetail> getConsumptionDetailByDay(@Param("consump_date")Long consump_date);
 }

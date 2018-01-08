@@ -21,7 +21,7 @@ public class ConsumptionDaily {
     private BigDecimal expense;
 
     //消费日期
-    private Date consump_date;
+    private Long consump_date;
 
     //是否超标
     private int is_over;

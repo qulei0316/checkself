@@ -29,6 +29,8 @@
         ORDER BY create_time DESC LIMIT #{startIndex},10
     </select>
 
+
+    <!--查询记录数-->
     <select id="getConsumptionDetailListSize" parameterType="ConsumptionDetailDto" resultType="Integer">
         SELECT COUNT(1) FROM  CONSUMPTION_DETAIL
         WHERE 1=1
@@ -40,5 +42,11 @@
         <if test="end_time!=null ">AND consump_date &lt;= #{end_time}</if>
         <if test="consump_type!=null ">AND consump_type = #{consump_type}</if>
         AND user_id=#{user_id}
+    </select>
+
+
+    <!--查询当天记录-->
+    <select id="getConsumptionDetailByDay" parameterType="String" resultType="ConsumptionDetail">
+        SELECT <include refid="Base_column"/> FROM CONSUMPTION_DETAIL WHERE consump_date=#{consump_date}
     </select>
 </mapper>

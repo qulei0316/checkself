@@ -29,13 +29,13 @@ public class ConsumptionController {
 
     /**
      * 用户录入消费记录
-     * @param request
+     * @param token
      * @param consumptionDetail
      * @return
      */
     @PostMapping("/recordentry")
-    public ResultVO recordentry(HttpServletRequest request, ConsumptionDetail consumptionDetail){
-        detailService.addConsumptionDetail(consumptionDetail);
+    public ResultVO recordentry(@RequestBody ConsumptionDetail consumptionDetail,@RequestParam("token") String token){
+        detailService.addConsumptionDetail(consumptionDetail,token);
         return ResultVOUtil.success();
     }
 

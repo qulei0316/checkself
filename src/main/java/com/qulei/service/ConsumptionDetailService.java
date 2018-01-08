@@ -1,9 +1,12 @@
 package com.qulei.service;
 
+import com.qulei.VO.ConsumpDailyVO;
 import com.qulei.VO.ConsumpDetailVO;
+import com.qulei.VO.ConsumptionDailyListVO;
 import com.qulei.VO.ResultVO;
 import com.qulei.common.enums.ConsumpTypeEnum;
 import com.qulei.common.utils.AuthorizeUtil;
+import com.qulei.common.utils.constant.StringConstants;
 import com.qulei.dao.ConsumptionDailyDao;
 import com.qulei.dao.ConsumptionDetailDao;
 import com.qulei.entity.bean.ConsumptionDaily;
@@ -45,7 +48,13 @@ public class ConsumptionDetailService {
      * @param consumptionDetail
      */
     @Transactional
-    public void addConsumptionDetail(ConsumptionDetail consumptionDetail){
+    public void addConsumptionDetail(ConsumptionDetail consumptionDetail,String token){
+        //鉴权
+        String user_id = consumptionDetail.getUser_id();
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+
         //输入条件判空
         if (consumptionDetail.getConsump_date() == null){
             throw new CheckSelfException(ExceptionEnum.CONSUMP_DATE_EMPTY_ERROR);
@@ -59,6 +68,7 @@ public class ConsumptionDetailService {
 
         //插入主键
         consumptionDetail.setConsump_id(KeyUtil.getUniqueKey());
+        consumptionDetail.setUser_id(user_id);
 
         //插入数据
         int i = detailDao.addConsumptionDetail(consumptionDetail);
@@ -106,7 +116,7 @@ public class ConsumptionDetailService {
 
 
     /**
-     * 查询记录总数
+     * 查询记录总数(按记录查询)
      */
     @Transactional
     public Integer getConsumptionListSize(ConsumptionDetailDto detailDto,String token){
@@ -127,19 +137,62 @@ public class ConsumptionDetailService {
      * @return
      */
     @Transactional
-    public ResultVO getConsumpListBydaily(ConsumptionDailyDto dailyDto){
-        //判断输入条件
-        if ((dailyDto.getMin_expense() != null) && (dailyDto.getMax_expense() != null) && (dailyDto.getMax_expense() < dailyDto.getMin_expense())){
-            throw new CheckSelfException(ExceptionEnum.CONSUMP_EXPENSE_EMPTY_ERROR);
+    public List<ConsumpDailyVO> getConsumpListBydaily(ConsumptionDailyDto dailyDto, String token){
+        String user_id = dailyDto.getUser_id();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
+
+        //判断输入条件
         if (dailyDto.getStart_time()!=null && dailyDto.getEnd_time()!=null && dailyDto.getEnd_time()<dailyDto.getStart_time()){
             throw new CheckSelfException(ExceptionEnum.CONSUMP_DATE_RANGE_ERROR);
         }
 
+        List<ConsumpDailyVO> consumpDailyVOS= new ArrayList<>();
+
         //查询列表
         List<ConsumptionDaily> consumptionDailyList = dailyDao.getConsumptionDailyList(dailyDto);
-        return  null;
+        for (ConsumptionDaily i : consumptionDailyList) {
+            List<ConsumptionDetail> consumptionDetailList = detailDao.getConsumptionDetailByDay(i.getConsump_date());
+            List<ConsumpDetailVO> consumpDetailVOS = new ArrayList<>();
+            for (ConsumptionDetail j : consumptionDetailList) {
+                ConsumpDetailVO detailVO = new ConsumpDetailVO();
+                detailVO.setExpense(j.getExpense());
+                detailVO.setConsump_desc(j.getConsump_desc());
+                detailVO.setConsump_date(CommonUtil.stampToDate(j.getConsump_date()));
+                detailVO.setConsump_type(ConsumpTypeEnum.getTypeName(j.getConsump_type()));
+                consumpDetailVOS.add(detailVO);
+            }
+            ConsumpDailyVO vo = new ConsumpDailyVO();
+            if (i.getIs_over() == 0){
+                vo.setIs_over(StringConstants.not_over);
+            }else {
+                vo.setIs_over(StringConstants.over);
+            }
+            vo.setConsump_date(CommonUtil.stampToDate(i.getConsump_date()));
+            vo.setExpense(i.getExpense());
+            vo.setConsumpDetailVOList(consumpDetailVOS);
+            consumpDailyVOS.add(vo);
+        }
+        return consumpDailyVOS;
     }
 
 
+    /**
+     * 记录总数（按天查询）
+     * @param dailyDto
+     * @param token
+     * @return
+     */
+    @Transactional
+    public Integer getConsumpListSizeBydaily(ConsumptionDailyDto dailyDto,String token){
+        String user_id = dailyDto.getUser_id();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+
+        return null;
+    }
 }

@@ -11,7 +11,9 @@ import java.util.List;
 @Data
 public class ConsumptionDetailListVO {
 
+    //记录总数
     private Integer totalSize;
 
+    //列表信息
     private List<ConsumpDetailVO> consumptionDetailList;
 }

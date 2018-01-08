@@ -14,7 +14,11 @@ public class ConsumptionDetailDto {
     //消费类型
     private Integer consump_type;
 
+    //金额范围
     private Integer expense_range;
+
+    //日期
+    private Long consump_date;
 
     //初始时间
     private Long start_time;
