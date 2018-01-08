@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/user")
-@Slf4j
 public class UserController {
 
     @Autowired
@@ -31,18 +30,9 @@ public class UserController {
      * @param sysUserDto
      */
     @PostMapping("/login")
-    public ResultVO login(@RequestBody SysUserDto sysUserDto,HttpServletRequest request) throws Exception{
-        log.info("正在进行用户登录......");
+    public ResultVO login(@RequestBody SysUserDto sysUserDto) throws Exception{
         SysUser sysUser = new SysUser();
-        try {
-            sysUser = sysUserService.login(sysUserDto);
-        }catch (CheckSelfException e){
-            e.printStackTrace();
-            return ResultVOUtil.error(e.getCode(),e.getMessage());
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResultVOUtil.error(1001, StringConstants.SYSTEM_ERROR);
-        }
+        sysUser = sysUserService.login(sysUserDto);
         return ResultVOUtil.success(sysUser);
     }
 
@@ -55,7 +45,6 @@ public class UserController {
      */
     @GetMapping("/logout")
     public ResultVO logout(HttpServletRequest request ,HttpServletResponse response){
-        log.info("用户登出中......");
         sysUserService.logout(request,response);
         return ResultVOUtil.success();
     }
@@ -68,16 +57,7 @@ public class UserController {
      */
     @PostMapping("/regist")
     public ResultVO regist(@RequestBody SysUserDto sysUserDto) throws Exception{
-        log.info("正在进行用户注册......");
-        try {
-            sysUserService.addSysUser(sysUserDto);
-        }catch (CheckSelfException e){
-            e.printStackTrace();
-            return ResultVOUtil.error(e.getCode(),e.getMessage());
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResultVOUtil.error(1001, StringConstants.SYSTEM_ERROR);
-        }
+        sysUserService.addSysUser(sysUserDto);
         return ResultVOUtil.success();
     }
 
@@ -89,7 +69,6 @@ public class UserController {
      */
     @PostMapping("/checkunique")
     public ResultVO checkunique(@RequestParam("username")String username){
-        log.info("正在校验用户名唯一性......");
         sysUserService.checkunique(username);
         return ResultVOUtil.success();
     }
@@ -102,7 +81,6 @@ public class UserController {
      */
     @PostMapping("/active")
     public ResultVO active(@RequestParam("code") String code){
-        log.info("正在激活用户......");
         sysUserService.activeSysUser(code);
         return ResultVOUtil.success();
     }

@@ -21,7 +21,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/consump")
-@Slf4j
 public class ConsumptionController {
 
 
@@ -36,7 +35,6 @@ public class ConsumptionController {
      */
     @PostMapping("/recordentry")
     public ResultVO recordentry(HttpServletRequest request, ConsumptionDetail consumptionDetail){
-        log.info("正在录入消费记录......");
         detailService.addConsumptionDetail(consumptionDetail);
         return ResultVOUtil.success();
     }
@@ -52,20 +50,11 @@ public class ConsumptionController {
     //记录查询(按记录查询)
     @PostMapping("/getdetailrecord")
     public ResultVO getdetailrecord(@RequestBody ConsumptionDetailDto consumptionDetailDto,@RequestParam ("token") String token){
-        log.info("正在生成列表......");
         ConsumptionDetailListVO vo = new ConsumptionDetailListVO();
-        try {
-            List<ConsumpDetailVO> consumptionDetailList = detailService.getConsumpListByrecord(consumptionDetailDto,token);
-            Integer size = detailService.getConsumptionListSize(consumptionDetailDto,token);
-            vo.setConsumptionDetailList(consumptionDetailList);
-            vo.setTotalSize(size);
-        }catch (CheckSelfException e){
-            e.printStackTrace();
-            return ResultVOUtil.error(e.getCode(),e.getMessage());
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResultVOUtil.error(1001, StringConstants.SYSTEM_ERROR);
-        }
+        List<ConsumpDetailVO> consumptionDetailList = detailService.getConsumpListByrecord(consumptionDetailDto,token);
+        Integer size = detailService.getConsumptionListSize(consumptionDetailDto,token);
+        vo.setConsumptionDetailList(consumptionDetailList);
+        vo.setTotalSize(size);
         return ResultVOUtil.success(vo);
     }
 

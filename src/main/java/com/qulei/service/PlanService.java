@@ -28,10 +28,7 @@ public class PlanService {
 
     //查询计划列表(进行中)
     @Transactional
-    public List getPlanList(HttpServletRequest request){
-        //获取用户
-        String user_id = sysUserService.getLoginSysUserId(request);
-
+    public List getPlanList(String user_id){
         //获取计划列表
         List<Plan> planList = planDao.getPlanlistInProcess(user_id);
         return planList;
@@ -41,8 +38,6 @@ public class PlanService {
     //新增计划
     @Transactional
     public void addPlan(HttpServletRequest request,Plan plan){
-        //获取用户
-        String user_id = sysUserService.getLoginSysUserId(request);
 
         //数据判断
         if (CommonUtil.isStringEmpty(plan.getPlan_name())){
@@ -61,7 +56,7 @@ public class PlanService {
         //设置参数
         plan.setPlan_id(KeyUtil.getUniqueKey());
         plan.setState(PlanStateEnum.INPROCESS.getCode());
-        plan.setUser_id(user_id);
+      //  plan.setUser_id();
 
         //插入
         int i = planDao.addPlan(plan);

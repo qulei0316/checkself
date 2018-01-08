@@ -3,7 +3,7 @@
 <mapper namespace="com.qulei.dao.SysUserDao">
 
     <sql id="Base_column">
-       USER_ID,USERNAME,PASSWORD,NICKNAME,PHONENUM,MAIL,ICON,CREATE_TIME,CODE,STATE
+       USER_ID,USERNAME,PASSWORD,NICKNAME,PHONENUM,MAIL,ICON,CREATE_TIME,CODE,STATE,TOKEN_PC,TOKEN_MOBILE
     </sql>
 
     <!--插入一个用户-->
@@ -44,12 +44,12 @@
     <insert id="updateSysUser" parameterType="SysUserDto">
         UPDATE SYS_USER
         <set>
-            <if test="nickname!=null and nickname!='' ">nickname=#{nickname}</if>
-            <if test="phonenum!=null and phonenum!='' ">phonenum=#{phonenum}</if>
-            <if test="password!=null and password!='' ">password=#{password}</if>
-            <if test="mail!=null and mail!='' ">mail=#{mail}</if>
-            <if test="icon!=null and icon!='' ">icon=#{icon}</if>
-            <if test="token_pc!=null and token_pc!='' ">token_pc=#{token_pc}</if>
+            <if test="nickname!=null and nickname!='' ">nickname=#{nickname},</if>
+            <if test="phonenum!=null and phonenum!='' ">phonenum=#{phonenum},</if>
+            <if test="password!=null and password!='' ">password=#{password},</if>
+            <if test="mail!=null and mail!='' ">mail=#{mail},</if>
+            <if test="icon!=null and icon!='' ">icon=#{icon},</if>
+            <if test="token_pc!=null and token_pc!='' ">token_pc=#{token_pc},</if>
         </set>
         WHERE user_id=#{user_id}
     </insert>
@@ -76,13 +76,13 @@
 
     <!--根据邮箱查询用户名-->
     <select id="getSysUserByMail" parameterType="String" resultType="SysUser">
-        SELECT <include refid="Base_column"/> FROM SYSTEM_USER
+        SELECT <include refid="Base_column"/> FROM SYS_USER
         WHERE mail=#{mail}
     </select>
 
     <!--根据用户id查询-->
     <select id="getSysUserByUserid" parameterType="String" resultType="SysUser">
-        SELECT <include refid="Base_column"/> FROM SYSTEM_USER
+        SELECT <include refid="Base_column"/> FROM SYS_USER
         WHERE user_id=#{user_id}
     </select>
 

@@ -18,21 +18,27 @@
     <select id="getConsumptionDetail" parameterType="ConsumptionDetailDto" resultType="ConsumptionDetail">
         SELECT <include refid="Base_column"/> FROM CONSUMPTION_DETAIL
         WHERE 1=1
-        <if test="min_expense!=null">AND expense &gt;= #{min_expense}</if>
-        <if test="max_expense!=null">AND expense &lt;= #{max_expense}</if>
+        <if test="expense_range!=null and expense_range==1">AND expense &gt;0 AND expense &lt;=10</if>
+        <if test="expense_range!=null and expense_range==2">AND expense &gt;10 AND expense &lt;=20</if>
+        <if test="expense_range!=null and expense_range==3">AND expense &gt;20 AND expense &lt;=30 </if>
+        <if test="expense_range!=null and expense_range==4">AND expense &gt;30</if>
         <if test="start_time!=null">AND  consump_date &gt;= #{start_time}</if>
         <if test="end_time!=null ">AND consump_date &lt;= #{end_time}</if>
+        <if test="consump_type!=null ">AND consump_type = #{consump_type}</if>
         AND user_id=#{user_id}
-        ORDER BY consump_date DESC LIMIT #{startIndex},10
+        ORDER BY create_time DESC LIMIT #{startIndex},10
     </select>
 
     <select id="getConsumptionDetailListSize" parameterType="ConsumptionDetailDto" resultType="Integer">
         SELECT COUNT(1) FROM  CONSUMPTION_DETAIL
         WHERE 1=1
-        <if test="min_expense!=null">AND expense &gt;= #{min_expense}</if>
-        <if test="max_expense!=null">AND expense &lt;= #{max_expense}</if>
+        <if test="expense_range!=null and expense_range==1">AND expense &gt;0 AND expense &lt;=10</if>
+        <if test="expense_range!=null and expense_range==2">AND expense &gt;10 AND expense &lt;=20</if>
+        <if test="expense_range!=null and expense_range==3">AND expense &gt;20 AND expense &lt;=30 </if>
+        <if test="expense_range!=null and expense_range==4">AND expense &gt;30</if>
         <if test="start_time!=null">AND  consump_date &gt;= #{start_time}</if>
         <if test="end_time!=null ">AND consump_date &lt;= #{end_time}</if>
+        <if test="consump_type!=null ">AND consump_type = #{consump_type}</if>
         AND user_id=#{user_id}
     </select>
 </mapper>

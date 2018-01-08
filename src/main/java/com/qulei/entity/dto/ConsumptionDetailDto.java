@@ -12,13 +12,9 @@ public class ConsumptionDetailDto {
     private String user_id;
 
     //消费类型
-    private int consump_type;
+    private Integer consump_type;
 
-    //最小金额
-    private Integer min_expense;
-
-    //最大金额
-    private Integer max_expense;
+    private Integer expense_range;
 
     //初始时间
     private Long start_time;

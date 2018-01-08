@@ -41,7 +41,7 @@ public class SysUserDto {
     //激活状态：0：未激活，1：激活
     private Integer state;
 
-    private long last_login_time;
+    private Long last_login_time;
 
     private String token_pc;
 }

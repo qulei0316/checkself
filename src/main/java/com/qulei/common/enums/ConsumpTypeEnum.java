@@ -9,6 +9,11 @@ public enum ConsumpTypeEnum {
     FOOD(1,"餐饮"),
     TRANSPORT(2,"交通"),
     MEDICAL(3,"医药"),
+    HOUSE(4,"住房"),
+    LIVING(5,"生活用品"),
+    COLOTHE(6,"服饰"),
+    REST(7,"文娱"),
+    COMMUNICATION(8,"通讯"),
     OTHER(99,"其他");
 
     private Integer code;

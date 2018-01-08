@@ -83,9 +83,6 @@ public class ConsumptionDetailService {
         }
 
         //判断输入条件
-        if ((detailDto.getMin_expense() != null) && (detailDto.getMax_expense() != null) && (detailDto.getMax_expense() < detailDto.getMin_expense())){
-            throw new CheckSelfException(ExceptionEnum.CONSUMP_EXPENSE_EMPTY_ERROR);
-        }
         if (detailDto.getStart_time()!=null && detailDto.getEnd_time()!=null && detailDto.getEnd_time()<detailDto.getStart_time()){
             throw new CheckSelfException(ExceptionEnum.CONSUMP_DATE_RANGE_ERROR);
         }
@@ -102,6 +99,7 @@ public class ConsumptionDetailService {
             vo.setConsump_desc(i.getConsump_desc());
             vo.setConsump_type(ConsumpTypeEnum.getTypeName(i.getConsump_type()));
             vo.setConsump_date(CommonUtil.stampToDate(i.getConsump_date()));
+            consumpDetailVOS.add(vo);
         }
         return  consumpDetailVOS;
     }

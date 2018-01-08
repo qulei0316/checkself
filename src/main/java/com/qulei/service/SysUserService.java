@@ -148,6 +148,8 @@ public class SysUserService {
         String token = UUIDUtil.createUUID();
         sysUserDto.setLast_login_time(date.getTime());
         sysUserDto.setToken_pc(token);
+        sysUserDto.setUser_id(sysUser.getUser_id());
+        sysUserDto.setPassword(null);
         int i = sysUserDao.updateSysUser(sysUserDto);
         if (i == 0){
             throw new  CheckSelfException(ExceptionEnum.TOKEN_UPDATE_FAIL);
