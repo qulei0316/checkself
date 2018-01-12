@@ -1,9 +1,9 @@
 package com.qulei.daoTest;
 
 
+import com.qulei.common.utils.UUIDUtil;
 import com.qulei.dao.ConsumptionDetailDao;
 import com.qulei.entity.bean.ConsumptionDetail;
-import com.qulei.common.utils.KeyUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +27,8 @@ public class ConsumptionDetailDaoTest {
 
     @Test
     public void addConsumptionDetailTest(){
-        Date date = new Date();
         ConsumptionDetail consumptionDetail = new ConsumptionDetail();
-        consumptionDetail.setConsump_id(KeyUtil.getUniqueKey());
+        consumptionDetail.setConsump_id(UUIDUtil.createUUID());
         consumptionDetail.setConsump_desc("s");
         consumptionDetail.setConsump_type(1);
         consumptionDetail.setExpense(new BigDecimal(5.2));

@@ -5,7 +5,7 @@ import com.qulei.VO.ConsumpDetailVO;
 import com.qulei.VO.ConsumptionDailyListVO;
 import com.qulei.VO.ResultVO;
 import com.qulei.common.enums.ConsumpTypeEnum;
-import com.qulei.common.utils.AuthorizeUtil;
+import com.qulei.common.utils.*;
 import com.qulei.common.utils.constant.StringConstants;
 import com.qulei.dao.ConsumptionDailyDao;
 import com.qulei.dao.ConsumptionDetailDao;
@@ -15,9 +15,6 @@ import com.qulei.entity.dto.ConsumptionDailyDto;
 import com.qulei.entity.dto.ConsumptionDetailDto;
 import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
-import com.qulei.common.utils.CommonUtil;
-import com.qulei.common.utils.CookieUtil;
-import com.qulei.common.utils.KeyUtil;
 import com.qulei.common.utils.constant.CookieConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,7 +64,7 @@ public class ConsumptionDetailService {
         }
 
         //插入主键
-        consumptionDetail.setConsump_id(KeyUtil.getUniqueKey());
+        consumptionDetail.setConsump_id(UUIDUtil.createUUID());
         consumptionDetail.setUser_id(user_id);
 
         //插入数据

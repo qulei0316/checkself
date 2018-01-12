@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class ConsumptionDailyDto {
 
+    //编号
+    private String id;
+
     //用户编号
     private String user_id;
 

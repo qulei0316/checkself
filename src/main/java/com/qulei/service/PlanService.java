@@ -4,7 +4,7 @@ import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.enums.PlanStateEnum;
 import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.CommonUtil;
-import com.qulei.common.utils.KeyUtil;
+import com.qulei.common.utils.UUIDUtil;
 import com.qulei.dao.PlanDao;
 import com.qulei.entity.bean.Plan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class PlanService {
         }
 
         //设置参数
-        plan.setPlan_id(KeyUtil.getUniqueKey());
+        plan.setPlan_id(UUIDUtil.createUUID());
         plan.setState(PlanStateEnum.INPROCESS.getCode());
       //  plan.setUser_id();
 

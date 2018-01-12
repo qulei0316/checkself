@@ -74,7 +74,7 @@ public class SysUserService {
         String password = sysUserDto.getPassword();
         sysUserDto.setPassword(MD5Util.EncoderByMd5(password));
 
-        sysUserDto.setUser_id(KeyUtil.getUniqueKey());//生成主键
+        sysUserDto.setUser_id(UUIDUtil.createUUID());//生成主键
 
         //生成激活码
         String code = UUIDUtil.createUUID();

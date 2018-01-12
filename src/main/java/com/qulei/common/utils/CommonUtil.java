@@ -26,11 +26,22 @@ public class CommonUtil {
      * @throws ParseException
      */
     public static Long dateToStamp(String s) throws ParseException {
-        String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse(s);
         Long ts = date.getTime();
         return ts;
+    }
+
+    /**
+     * 获取当前日期的时间戳
+     */
+    public static Long getTodayDate() throws ParseException {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String str = sdf.format(date);
+        Date today = sdf.parse(str);
+        Long ls = today.getTime();
+        return ls;
     }
 
 
