@@ -18,7 +18,7 @@ public class ConsumptionDaily {
     private String user_id;
 
     //消费金额
-    private BigDecimal expense;
+    private Double expense;
 
     //消费日期
     private Long consump_date;

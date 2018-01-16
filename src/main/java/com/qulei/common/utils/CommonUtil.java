@@ -2,6 +2,7 @@ package com.qulei.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -65,5 +66,39 @@ public class CommonUtil {
         Date date = new Date(s);
         res = simpleDateFormat.format(date);
         return res;
+    }
+
+
+    /**
+     * 获取当天前星期(周日是1)
+     */
+    public static int getWeekday(){
+        Date today = new Date();
+        Calendar c=Calendar.getInstance();
+        c.setTime(today);
+        int weekday=c.get(Calendar.DAY_OF_WEEK);
+        return weekday;
+    }
+
+    /**
+     * 获取上个月第一天的时间戳
+     */
+    public static Long getlastmonthfirstday() throws ParseException {
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return dateToStamp(stampToDate(calendar.getTimeInMillis()));
+    }
+
+
+    /**
+     * 获取上个月最后一天的时间戳
+     */
+    public static Long getlastmonthlastday() throws ParseException {
+        Calendar calendar=Calendar.getInstance();
+        int month=calendar.get(Calendar.MONTH);
+        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return dateToStamp(stampToDate(calendar.getTimeInMillis()));
     }
 }

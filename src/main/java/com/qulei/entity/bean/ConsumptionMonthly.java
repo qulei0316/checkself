@@ -17,7 +17,7 @@ public class ConsumptionMonthly {
     private String user_id;
 
     //消费金额
-    private BigDecimal expense;
+    private Double expense;
 
     //消费月份
     private String consump_month;

@@ -22,11 +22,7 @@ public class Dictionary {
     //字符值
     private String value_str;
 
-    //创建时间
-    private Long create_time;
-
     //修改时间
     private Long update_time;
 
-    private int yn;
 }

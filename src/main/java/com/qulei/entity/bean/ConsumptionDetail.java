@@ -18,7 +18,7 @@ public class ConsumptionDetail {
     private String user_id;
 
     //消费金额
-    private BigDecimal expense;
+    private Double expense;
 
     //消费类型
     private Integer consump_type;

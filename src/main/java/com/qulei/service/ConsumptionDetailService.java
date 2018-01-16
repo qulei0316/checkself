@@ -1,9 +1,6 @@
 package com.qulei.service;
 
-import com.qulei.VO.ConsumpDailyVO;
-import com.qulei.VO.ConsumpDetailVO;
-import com.qulei.VO.ConsumptionDailyListVO;
-import com.qulei.VO.ResultVO;
+import com.qulei.VO.*;
 import com.qulei.common.enums.ConsumpTypeEnum;
 import com.qulei.common.utils.*;
 import com.qulei.common.utils.constant.StringConstants;
@@ -22,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +35,8 @@ public class ConsumptionDetailService {
     @Autowired
     private AuthorizeUtil authorizeUtil;
 
-    @Autowired
-    private ConsumptionDailyDao dailyDao;
+    private static final Long onedaytimestamp = 24*60*60*1000L;
+
 
     /**
      * 录入消费记录
@@ -129,67 +127,55 @@ public class ConsumptionDetailService {
 
 
     /**
-     * 按天查询消费列表
-     * @param dailyDto
-     * @return
+     * 生成昨天的记录
      */
     @Transactional
-    public List<ConsumpDailyVO> getConsumpListBydaily(ConsumptionDailyDto dailyDto, String token){
-        String user_id = dailyDto.getUser_id();
+    public List<ConsumpDetailVO> getLastDayConsumptionRecord(String user_id,String token) throws ParseException {
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
-
-        //判断输入条件
-        if (dailyDto.getStart_time()!=null && dailyDto.getEnd_time()!=null && dailyDto.getEnd_time()<dailyDto.getStart_time()){
-            throw new CheckSelfException(ExceptionEnum.CONSUMP_DATE_RANGE_ERROR);
-        }
-
-        List<ConsumpDailyVO> consumpDailyVOS= new ArrayList<>();
-
-        //查询列表
-        List<ConsumptionDaily> consumptionDailyList = dailyDao.getConsumptionDailyList(dailyDto);
-        for (ConsumptionDaily i : consumptionDailyList) {
-            List<ConsumptionDetail> consumptionDetailList = detailDao.getConsumptionDetailByDay(i.getConsump_date());
-            List<ConsumpDetailVO> consumpDetailVOS = new ArrayList<>();
-            for (ConsumptionDetail j : consumptionDetailList) {
-                ConsumpDetailVO detailVO = new ConsumpDetailVO();
-                detailVO.setExpense(j.getExpense());
-                detailVO.setConsump_desc(j.getConsump_desc());
-                detailVO.setConsump_date(CommonUtil.stampToDate(j.getConsump_date()));
-                detailVO.setConsump_type(ConsumpTypeEnum.getTypeName(j.getConsump_type()));
-                consumpDetailVOS.add(detailVO);
-            }
-            ConsumpDailyVO vo = new ConsumpDailyVO();
-            if (i.getIs_over() == 0){
-                vo.setIs_over(StringConstants.not_over);
-            }else {
-                vo.setIs_over(StringConstants.over);
-            }
-            vo.setConsump_date(CommonUtil.stampToDate(i.getConsump_date()));
+        Long lastday = CommonUtil.getTodayDate() - onedaytimestamp;
+        List<ConsumpDetailVO> consumpDetailVOS = new ArrayList<>();
+        List<ConsumptionDetail> consumptionDetailList = detailDao.getConsumptionDetailByDay(lastday,user_id);
+        for (ConsumptionDetail i : consumptionDetailList){
+            ConsumpDetailVO vo = new ConsumpDetailVO();
             vo.setExpense(i.getExpense());
-            vo.setConsumpDetailVOList(consumpDetailVOS);
-            consumpDailyVOS.add(vo);
+            vo.setConsump_desc(i.getConsump_desc());
+            vo.setConsump_type(ConsumpTypeEnum.getTypeName(i.getConsump_type()));
+            consumpDetailVOS.add(vo);
         }
-        return consumpDailyVOS;
-    }
+        return consumpDetailVOS;
+     }
+
 
 
     /**
-     * 记录总数（按天查询）
-     * @param dailyDto
-     * @param token
+     * 生成上月消费占比
      * @return
      */
     @Transactional
-    public Integer getConsumpListSizeBydaily(ConsumptionDailyDto dailyDto,String token){
-        String user_id = dailyDto.getUser_id();
+    public List<LastweekConsumpTypeProportionVO> getMonthTypeProportion(String user_id,String token) throws ParseException {
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
 
-        return null;
+        //获取上个月第一天和最后一天时间戳
+        Long first_day = CommonUtil.getlastmonthfirstday();
+        Long last_day = CommonUtil.getlastmonthlastday();
+
+        List<LastweekConsumpTypeProportionVO> list = new ArrayList<>();
+        //遍历查询所有类型金额数
+        for (ConsumpTypeEnum consumpTypeEnum : ConsumpTypeEnum.values()){
+            LastweekConsumpTypeProportionVO vo = new LastweekConsumpTypeProportionVO();
+            Double sum_expense = detailDao.getConumpTypeProportion(first_day,last_day,consumpTypeEnum.getCode(),user_id);
+            vo.setValue(sum_expense);
+            vo.setName(consumpTypeEnum.getType());
+            list.add(vo);
+        }
+        return list;
     }
+
+
 }

@@ -21,5 +21,8 @@ public interface ConsumptionDetailDao {
     Integer getConsumptionDetailListSize(ConsumptionDetailDto detailDto);
 
     //查询当前记录
-    List<ConsumptionDetail> getConsumptionDetailByDay(@Param("consump_date")Long consump_date);
+    List<ConsumptionDetail> getConsumptionDetailByDay(@Param("consump_date")Long consump_date,@Param("user_id")String user_id);
+
+    //查询消费类型比重
+    Double getConumpTypeProportion(@Param("first_day") Long first_day, @Param("last_day")Long last_day,@Param("code") Integer code,@Param("user_id")String user_id);
 }

@@ -48,5 +48,15 @@
     <!--查询当天记录-->
     <select id="getConsumptionDetailByDay" parameterType="String" resultType="ConsumptionDetail">
         SELECT <include refid="Base_column"/> FROM CONSUMPTION_DETAIL WHERE consump_date=#{consump_date}
+        AND user_id = #{user_id}
+    </select>
+
+
+    <!--查询月度消费类型占比-->
+    <select id="getConumpTypeProportion" resultType="Double">
+        SELECT sum(expense) FROM CONSUMPTION_DETAIL WHERE
+        consump_date &gt; = #{first_day} AND consump_date &lt;= #{last_day}
+        AND consump_type=#{code}
+        AND user_id = #{user_id}
     </select>
 </mapper>

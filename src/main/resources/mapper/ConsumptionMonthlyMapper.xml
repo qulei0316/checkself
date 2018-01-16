@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qulei.dao.ConsumptionMonthlyDao">
+
+    <sql id="Base_column">
+        ID,USER_ID,EXPENSE,CONSUMP_MONTH,IS_OVER
+    </sql>
+
+    <!--查询金额-->
+    <select id="getExpenseBymonth" resultType="Double" >
+        SELECT expense FROM CONSUMPTION_MONTHLY WHERE consump_month = #{month} AND user_id=#{user_id}
+    </select>
+
+</mapper>

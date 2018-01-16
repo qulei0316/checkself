@@ -20,6 +20,9 @@ public class ConsumptionDailyDto {
     //金额范围
     private Integer expense_range;
 
+    //金额
+    private Double expense;
+
     //起始时间
     private Long start_time;
 
@@ -27,7 +30,7 @@ public class ConsumptionDailyDto {
     private Long end_time;
 
     //页码
-    private Integer page;
+    private Integer pageIndex;
 
     //每页条数
     private Integer pageSize;

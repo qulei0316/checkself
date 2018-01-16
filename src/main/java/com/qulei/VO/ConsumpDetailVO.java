@@ -14,7 +14,7 @@ public class ConsumpDetailVO {
     private String user_id;
 
     //消费金额
-    private BigDecimal expense;
+    private Double expense;
 
     //消费类型
     private String consump_type;

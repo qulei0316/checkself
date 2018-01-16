@@ -9,7 +9,7 @@ import java.util.List;
 public class ConsumpDailyVO {
 
     //消费金额
-    private BigDecimal expense;
+    private Double expense;
 
     //是否超标
     private String is_over;
