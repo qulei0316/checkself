@@ -25,14 +25,9 @@ public class CheckselfApplicationTests {
 
 	@Test
 	public void testday() throws ParseException {
-		Long ls = CommonUtil.getlastmonthlastday();
-		System.out.print(ls);
+		Long ls = CommonUtil.getThismonthFirstDay();
+		System.out.print(CommonUtil.stampToDate(ls));
 
-		String d = CommonUtil.stampToTime(ls);
-		System.out.print(d);
-
-		Long lss = CommonUtil.dateToStamp(d);
-		System.out.print(lss);
 	}
 
 }

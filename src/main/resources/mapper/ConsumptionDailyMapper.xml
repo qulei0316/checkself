@@ -54,4 +54,29 @@
         (id,user_id,expense,consump_date,is_over)
         VALUE (#{id},#{user_id},#{expense},#{consump_date},#{is_over})
     </insert>
+
+    <!--获取本月消费总金额-->
+    <select id="getThisMonthExpense" resultType="Double">
+        SELECT expense FROM CONSUMPTION_DAILY WHERE consump_date &lt;= #{last_day}
+        AND consump_date &gt;= #{first_day}
+        AND user_id = #{user_id}
+    </select>
+
+
+    <!--修改日消费记录-->
+    <update id="updateConsumpDailyrecord" parameterType="ConsumptionDaily">
+        UPDATE CONSUMPTION_DAILY SET
+        expense = #{expense},is_over = #{is_over}
+        WHERE consump_date = #{consump_date}
+        AND user_id = #{user_id}
+    </update>
+
+    <!--获取上个月超标列表-->
+    <select id="getLastMonthOverList" resultType="ConsumptionDaily">
+        SELECT <include refid="Base_column"/> FROM CONSUMPTION_DAILY
+        WHERE  consump_date &lt;= #{last_day}
+        AND consump_date &gt;= #{first_day}
+        AND user_id = #{user_id}
+        AND expense &gt;= #{standard}
+    </select>
 </mapper>

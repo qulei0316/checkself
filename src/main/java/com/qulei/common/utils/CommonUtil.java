@@ -101,4 +101,34 @@ public class CommonUtil {
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         return dateToStamp(stampToDate(calendar.getTimeInMillis()));
     }
+
+
+    /**
+     * 获取上个月月份
+     */
+    public static String getlastmonth(){
+        Calendar calendar = Calendar.getInstance();
+        String last_month = null;
+        int month = calendar.get(Calendar.MONTH);
+        if (month>10){
+            month = month-1;
+            last_month = calendar.get(Calendar.YEAR) +"-"+ month;
+        }else if (month == 1){
+            last_month = calendar.get(Calendar.YEAR - 1) +"-12";
+        }else {
+            month = month - 1;
+            last_month = calendar.get(Calendar.YEAR) + "-0" +month;
+        }
+        return last_month;
+    }
+
+    /**
+     * 获取本月第一天时间戳
+     */
+    public static Long getThismonthFirstDay() throws ParseException {
+        Calendar calendar=Calendar.getInstance();
+//        calendar.add(Calendar.MONTH,0);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return dateToStamp(stampToDate(calendar.getTimeInMillis()));
+    }
 }

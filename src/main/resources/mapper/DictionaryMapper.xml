@@ -7,8 +7,12 @@
     </sql>
 
     <!--查询字典内容（数字）-->
-    <select id="getDictionaryNum" parameterType="String" resultType="int">
+    <select id="getDictionaryNum" parameterType="String" resultType="Double">
         SELECT value_num FROM DICTIONARY WHERE dic_id=#{dic_id}
     </select>
 
+    <!--设置数字字典-->
+    <update id="setNumvalueDic" parameterType="DictionaryDto">
+        UPDATE DICTIONARY SET value_num = #{value_num} WHERE dic_id=#{dic_id} AND user_id = #{user_id}
+    </update>
 </mapper>

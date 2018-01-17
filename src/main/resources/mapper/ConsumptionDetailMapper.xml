@@ -44,6 +44,11 @@
         AND user_id=#{user_id}
     </select>
 
+    <!--删除记录-->
+    <delete id="deleteDetailRecord" parameterType="ConsumptionDetail">
+        DELETE FROM CONSUMPTION_DETAIL WHERE consump_id=#{consump_id}
+    </delete>
+
 
     <!--查询当天记录-->
     <select id="getConsumptionDetailByDay" parameterType="String" resultType="ConsumptionDetail">
@@ -57,6 +62,31 @@
         SELECT sum(expense) FROM CONSUMPTION_DETAIL WHERE
         consump_date &gt; = #{first_day} AND consump_date &lt;= #{last_day}
         AND consump_type=#{code}
+        AND user_id = #{user_id}
+    </select>
+
+    <!--获取最高记录-->
+    <select id="getHighestRecord" resultType="ConsumptionDetail">
+        SELECT max(expense) AS EXPENSE,CONSUMP_TYPE,CONSUMP_DESC,CONSUMP_DATE FROM CONSUMPTION_DETAIL
+        WHERE  consump_date &lt;= #{last_day}
+        AND consump_date &gt;= #{first_day}
+        AND user_id = #{user_id}
+    </select>
+
+    <!--获取最高占比-->
+    <select id="getHighestProportion" resultType="ConsumptionDetail">
+        SELECT max(exp) AS expense,consump_type FROM
+        (SELECT sum(expense) AS exp,consump_type FROM CONSUMPTION_DETAIL
+        WHERE consump_date &lt;= #{last_day}
+        AND consump_date &gt;= #{first_day}
+        AND user_id = #{user_id}
+        GROUP BY consump_type)
+    </select>
+
+    <!--获取本月已消费金额-->
+    <select id="getThisMonthConsumption" resultType="Double">
+        SELECT sum(expense) FROM CONSUMPTION_DETAIL
+        WHERE consump_date &gt;= #{first_day}
         AND user_id = #{user_id}
     </select>
 </mapper>

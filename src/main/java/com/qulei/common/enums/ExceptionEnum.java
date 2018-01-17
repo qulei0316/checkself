@@ -37,7 +37,9 @@ public enum ExceptionEnum {
     CONSUMP_RECORD_ADD_ERROR(1,"增添记录失败"),
     CONSUMP_EXPENSE_RANGE_ERROR(1,"请输入正确的金额区间"),
     CONSUMP_DATE_RANGE_ERROR(1,"请输入正确的时间区间"),
-
+    DAILY_RECORD_CREATE_ERROR(1,"每日记录生成失败" ),
+    MONTHLY_RECORD_CREATE_ERROR(1,"月账单生成成失败" ),
+    DELETE_DETAIL_ERROR(0,"记录删除失败" ),
 
     //计划模块异常
     PLAN_NAME_EMPTY_ERROR(1,"请填写计划名称"),
@@ -46,7 +48,11 @@ public enum ExceptionEnum {
     PLAN_LEVEL_EMPTY_ERROR(1,"请选择计划等级"),
     PLAN_CREATE_ERROR(1,"创建任务失败"),
     PLAN_UPDATE_ERROR(1,"修改任务失败"),
-    PLAN_DEADLINE_BEFORE_ERROR(1,"请设置正确的截止日期");
+    PLAN_DEADLINE_BEFORE_ERROR(1,"请设置正确的截止日期"),
+
+    //字典模块
+    DICTIONARY_SET_ERROR(1,"设置字典值失败" ),
+    NO_VALUE_NUM_ERROR(1,"请输入数值" );
 
     //错误码
     private Integer code;

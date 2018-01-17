@@ -5,7 +5,8 @@ package com.qulei.common.enums;
  */
 public enum DictionaryIdEnum {
 
-    CONSUMP_DAILY_STANDARD("1000","每日消费标准");
+    CONSUMP_DAILY_STANDARD("1000","每日消费标准"),
+    CONSUMP_MONTHLY_STANDARD("1001","每月消费标准");
 
     private String dic_id;
 

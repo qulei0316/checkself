@@ -2,7 +2,9 @@ package com.qulei.service;
 
 import com.qulei.VO.ConsumpDailyVO;
 import com.qulei.VO.ConsumpDetailVO;
+import com.qulei.VO.OverStandardVO;
 import com.qulei.common.enums.ConsumpTypeEnum;
+import com.qulei.common.enums.DictionaryIdEnum;
 import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.AuthorizeUtil;
@@ -10,6 +12,7 @@ import com.qulei.common.utils.CommonUtil;
 import com.qulei.common.utils.constant.StringConstants;
 import com.qulei.dao.ConsumptionDailyDao;
 import com.qulei.dao.ConsumptionDetailDao;
+import com.qulei.dao.DictionaryDao;
 import com.qulei.entity.bean.ConsumptionDaily;
 import com.qulei.entity.bean.ConsumptionDetail;
 import com.qulei.entity.dto.ConsumptionDailyDto;
@@ -33,6 +36,9 @@ public class ConsumptionDailyService {
 
     @Autowired
     private ConsumptionDetailDao detailDao;
+
+    @Autowired
+    private DictionaryDao dictionaryDao;
 
     @Autowired
     private AuthorizeUtil authorizeUtil;
@@ -168,5 +174,49 @@ public class ConsumptionDailyService {
         List<Double> this_week = dailyDao.getThisweekTendency(this_monday,user_id);
 
         return this_week;
+    }
+
+
+    /**
+     * 查询上个月的超标情况
+     * @param user_id
+     * @param token
+     * @return
+     */
+    @Transactional
+    public OverStandardVO getOverStandardrecord(String user_id, String token) throws ParseException {
+        OverStandardVO standardVO = new OverStandardVO();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+
+        //获取上个月时间戳
+        Long first_day = CommonUtil.getlastmonthfirstday();
+        Long last_day = CommonUtil.getlastmonthlastday();
+
+        //获取标准
+        Double standard = dictionaryDao.getDictionaryNum(DictionaryIdEnum.CONSUMP_DAILY_STANDARD.getDic_id());
+
+        //查询上个月超标次数
+        List<ConsumptionDaily> list = dailyDao.getLastMonthOverList(first_day,last_day,user_id,standard);
+        Integer over_num = list.size();
+        List<ConsumpDailyVO> consumpDailyVOList = new ArrayList<>();
+        for (ConsumptionDaily daily : list) {
+            ConsumpDailyVO vo = new ConsumpDailyVO();
+            vo.setId(daily.getId());
+            if (daily.getIs_over() == 0){
+                vo.setIs_over(StringConstants.not_over);
+            }else {
+                vo.setIs_over(StringConstants.over);
+            }
+            vo.setConsump_date(CommonUtil.stampToDate(daily.getConsump_date()));
+            vo.setExpense(daily.getExpense());
+            consumpDailyVOList.add(vo);
+        }
+
+        standardVO.setOver_num(over_num);
+        standardVO.setConsumpDailyVOList(consumpDailyVOList);
+        return standardVO;
     }
 }

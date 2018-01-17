@@ -8,6 +8,9 @@ import java.util.List;
 @Data
 public class ConsumpDailyVO {
 
+    //编号
+    private String id;
+
     //消费金额
     private Double expense;
 

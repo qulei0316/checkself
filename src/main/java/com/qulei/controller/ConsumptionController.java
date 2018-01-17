@@ -37,11 +37,18 @@ public class ConsumptionController {
      * @return
      */
     @PostMapping("/recordentry")
-    public ResultVO recordentry(@RequestBody ConsumptionDetail consumptionDetail,@RequestParam("token") String token){
+    public ResultVO recordentry(@RequestBody ConsumptionDetail consumptionDetail,@RequestParam("token") String token) throws ParseException {
         detailService.addConsumptionDetail(consumptionDetail,token);
         return ResultVOUtil.success();
     }
 
+
+    //删除记录
+    @PostMapping("/deletedetail")
+    public ResultVO deletedetail(@RequestBody ConsumptionDetail consumptionDetail,@RequestParam("token")String token){
+        detailService.deleteDetailRecord(consumptionDetail,token);
+        return ResultVOUtil.success();
+    }
 
     //记录查询(按日期)
     @GetMapping("/getdailyrecord")
@@ -102,5 +109,32 @@ public class ConsumptionController {
         return ResultVOUtil.success(vo);
     }
 
+    //查询上个月超标情况
+    @GetMapping("/getoverstandard")
+    public ResultVO getoverstandard (@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+        OverStandardVO vo = dailyService.getOverStandardrecord(user_id,token);
+        return ResultVOUtil.success(vo);
+    }
 
+    //获取单笔最高金额
+    @GetMapping("/gethighestrecord")
+    public ResultVO gethighestrecord (@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+        List<ConsumpDetailVO> list = detailService.getHighestRecord(user_id,token);
+        return ResultVOUtil.success(list);
+    }
+
+
+    //获取消费比重最高
+    @GetMapping("/gethighestproportion")
+    public ResultVO gethighestproportion(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+        ConsumpDetailVO vo = detailService.getHighestProportion(user_id, token);
+        return ResultVOUtil.success(vo);
+    }
+
+    //获取本月剩余预算
+    @GetMapping("/getthismonthsurplus")
+    public ResultVO getthismonthsurplus(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+        ThisMonthSurplusVO vo = detailService.getThisMonthConsumption(user_id,token);
+        return ResultVOUtil.success(vo);
+    }
 }

@@ -25,4 +25,13 @@ public interface ConsumptionDailyDao {
 
     //查询本周数据
     List<Double> getThisweekTendency(@Param("this_monday") Long this_monday,@Param("user_id")String user_id);
+
+    //获取本月消费总金额
+    Double getThisMonthExpense(@Param("first_day") Long first_day, @Param("last_day") Long last_day, @Param("user_id") String user_id);
+
+    //修改日消费记录
+    int updateConsumpDailyrecord(ConsumptionDaily daily);
+
+    //获取上个月超标列表
+    List<ConsumptionDaily> getLastMonthOverList(@Param("first_day") Long first_day,@Param("last_day") Long last_day, @Param("user_id") String user_id,@Param("standard") Double standard);
 }

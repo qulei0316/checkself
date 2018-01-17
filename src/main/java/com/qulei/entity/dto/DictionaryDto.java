@@ -1,11 +1,13 @@
-package com.qulei.entity.bean;
+package com.qulei.entity.dto;
 
+import com.qulei.common.enums.DictionaryIdEnum;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
+/**
+ * Created by Administrator on 2018/1/17.
+ */
 @Data
-public class Dictionary {
+public class DictionaryDto {
 
     //编号
     private String dic_id;
@@ -28,4 +30,5 @@ public class Dictionary {
     //修改时间
     private Long update_time;
 
+    private DictionaryIdEnum dictionaryIdEnum;
 }

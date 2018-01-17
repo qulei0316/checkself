@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 @Data
 public class ConsumpDetailVO {
 
+    //编号
+    private String conusmp_id;
+
     //关联用户id
     private String user_id;
 
