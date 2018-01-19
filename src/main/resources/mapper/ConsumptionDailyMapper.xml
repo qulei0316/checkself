@@ -7,7 +7,7 @@
     </sql>
 
     <!--根据条件查询消费记录列表-->
-    <select id="getConsumptionDetail" parameterType="ConsumptionDailyDto" resultType="ConsumptionDaily">
+    <select id="getConsumptionDailyList" parameterType="ConsumptionDailyDto" resultType="ConsumptionDaily">
         SELECT <include refid="Base_column"/> FROM CONSUMPTION_DAILY
         WHERE 1=1
         <if test="expense_range!=null and expense_range==1">AND expense &gt;0 AND expense &lt;=10</if>
@@ -35,14 +35,14 @@
     </select>
 
     <!--获取上周消费金额记录-->
-    <select id="getLastweekTendency" parameterType="Long" resultType="Double">
+    <select id="getLastweekTendency" resultType="Double">
         SELECT expense FROM CONSUMPTION_DAILY WHERE consump_date &lt;= #{last_sunday}
         AND user_id = #{user_id}
         ORDER BY consump_date DESC limit 0,7
     </select>
 
     <!--获取本周消费金额记录-->
-    <select id="getThisweekTendency" parameterType="Long" resultType="Double">
+    <select id="getThisweekTendency"  resultType="Double">
         SELECT expense FROM CONSUMPTION_DAILY WHERE consump_date &gt;= #{this_monday}
         AND user_id = #{user_id}
         ORDER BY consump_date
@@ -78,5 +78,13 @@
         AND consump_date &gt;= #{first_day}
         AND user_id = #{user_id}
         AND expense &gt;= #{standard}
+    </select>
+
+    <!--获取上月最高-->
+    <select id="getLastMonthHighest" resultType="ConsumptionDaily">
+        SELECT max(expense)AS EXPENSE,ID,CONSUMP_DATE FROM CONSUMPTION_DAILY
+        WHERE consump_date &lt;= #{last_day}
+        AND consump_date &gt;= #{first_day}
+        AND user_id = #{user_id}
     </select>
 </mapper>

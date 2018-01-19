@@ -34,4 +34,7 @@ public interface ConsumptionDailyDao {
 
     //获取上个月超标列表
     List<ConsumptionDaily> getLastMonthOverList(@Param("first_day") Long first_day,@Param("last_day") Long last_day, @Param("user_id") String user_id,@Param("standard") Double standard);
+
+    //获取上个月最高
+    ConsumptionDaily getLastMonthHighest(@Param("first_day") Long first_day,@Param("last_day") Long last_day, @Param("user_id") String user_id);
 }

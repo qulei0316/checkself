@@ -1,6 +1,6 @@
 package com.qulei.entity.dto;
 
-import com.qulei.common.enums.DictionaryIdEnum;
+import com.qulei.common.enums.DictionaryCodeEnum;
 import lombok.Data;
 
 /**
@@ -11,6 +11,8 @@ public class DictionaryDto {
 
     //编号
     private String dic_id;
+
+    private String dic_code;
 
     //用户编号
     private String user_id;
@@ -30,5 +32,5 @@ public class DictionaryDto {
     //修改时间
     private Long update_time;
 
-    private DictionaryIdEnum dictionaryIdEnum;
+    private DictionaryCodeEnum dictionaryCodeEnum;
 }

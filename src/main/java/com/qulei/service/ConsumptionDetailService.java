@@ -2,25 +2,20 @@ package com.qulei.service;
 
 import com.qulei.VO.*;
 import com.qulei.common.enums.ConsumpTypeEnum;
-import com.qulei.common.enums.DictionaryIdEnum;
+import com.qulei.common.enums.DictionaryCodeEnum;
 import com.qulei.common.utils.*;
-import com.qulei.common.utils.constant.StringConstants;
 import com.qulei.dao.ConsumptionDailyDao;
 import com.qulei.dao.ConsumptionDetailDao;
 import com.qulei.dao.DictionaryDao;
 import com.qulei.entity.bean.ConsumptionDaily;
 import com.qulei.entity.bean.ConsumptionDetail;
-import com.qulei.entity.dto.ConsumptionDailyDto;
 import com.qulei.entity.dto.ConsumptionDetailDto;
 import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
-import com.qulei.common.utils.constant.CookieConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +88,7 @@ public class ConsumptionDetailService {
             daily.setConsump_date(today);
             daily.setExpense(daily_total);
             //查询消费标准
-            Double standard = dictionaryDao.getDictionaryNum(DictionaryIdEnum.CONSUMP_DAILY_STANDARD.getDic_id());
+            Double standard = dictionaryDao.getDictionaryNum(DictionaryCodeEnum.CONSUMP_DAILY_STANDARD.getDic_code(),user_id);
             Integer is_over = 0;
             if (daily_total > standard){
                 is_over = 1;
@@ -240,7 +235,7 @@ public class ConsumptionDetailService {
      * @return
      */
     @Transactional
-    public List<ConsumpDetailVO> getHighestRecord(String user_id, String token) throws ParseException {
+    public ConsumpDetailVO getHighestRecord(String user_id, String token) throws ParseException {
         List<ConsumpDetailVO> list = new ArrayList<>();
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
@@ -251,43 +246,43 @@ public class ConsumptionDetailService {
         Long first_day = CommonUtil.getlastmonthfirstday();
         Long last_day = CommonUtil.getlastmonthlastday();
 
-        List<ConsumptionDetail> details = detailDao.getHighestRecord(user_id,first_day,last_day);
-        for (ConsumptionDetail detail : details) {
-            ConsumpDetailVO vo = new ConsumpDetailVO();
-            vo.setExpense(detail.getExpense());
-            vo.setConsump_desc(detail.getConsump_desc());
-            vo.setConsump_type(ConsumpTypeEnum.getTypeName(detail.getConsump_type()));
-            vo.setConsump_date(CommonUtil.stampToDate(detail.getConsump_date()));
-            list.add(vo);
-        }
-        return list;
-    }
-
-
-    /**
-     * 查询上个月占比最大消费类型
-     * @param user_id
-     * @param token
-     * @return
-     */
-    @Transactional
-    public ConsumpDetailVO getHighestProportion(String user_id, String token) throws ParseException {
-        ConsumpDetailVO vo = new ConsumpDetailVO();
-        //鉴权
-        if (!authorizeUtil.verify(user_id,token)){
-            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        ConsumptionDetail detail = detailDao.getHighestRecord(user_id,first_day,last_day);
+        ConsumpDetailVO vo = null;
+        if (detail != null) {
+                vo.setExpense(detail.getExpense());
+                vo.setConsump_desc(detail.getConsump_desc());
+                vo.setConsump_type(ConsumpTypeEnum.getTypeName(detail.getConsump_type()));
+                vo.setConsump_date(CommonUtil.stampToDate(detail.getConsump_date()));
         }
 
-        //获取上个月第一天和最后一天时间戳
-        Long first_day = CommonUtil.getlastmonthfirstday();
-        Long last_day = CommonUtil.getlastmonthlastday();
-
-        //查询
-        ConsumptionDetail detail = detailDao.getHighestProportion(user_id,first_day,last_day);
-        vo.setConsump_type(ConsumpTypeEnum.getTypeName(detail.getConsump_type()));
-        vo.setExpense(detail.getExpense());
         return vo;
     }
+
+
+//    /**
+//     * 查询上个月占比最大消费类型
+//     * @param user_id
+//     * @param token
+//     * @return
+//     */
+//    @Transactional
+//    public ConsumpDetailVO getHighestProportion(String user_id, String token) throws ParseException {
+//        ConsumpDetailVO vo = new ConsumpDetailVO();
+//        //鉴权
+//        if (!authorizeUtil.verify(user_id,token)){
+//            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+//        }
+//
+//        //获取上个月第一天和最后一天时间戳
+//        Long first_day = CommonUtil.getlastmonthfirstday();
+//        Long last_day = CommonUtil.getlastmonthlastday();
+//
+//        //查询
+//        ConsumptionDetail detail = detailDao.getHighestProportion(user_id,first_day,last_day);
+//        vo.setConsump_type(ConsumpTypeEnum.getTypeName(detail.getConsump_type()));
+//        vo.setExpense(detail.getExpense());
+//        return vo;
+//    }
 
 
     /**
@@ -307,7 +302,7 @@ public class ConsumptionDetailService {
         //获取本月第一天
         Long first_day = CommonUtil.getThismonthFirstDay();
         Double consumption = detailDao.getThisMonthConsumption(first_day,user_id);
-        Double standard = dictionaryDao.getDictionaryNum(DictionaryIdEnum.CONSUMP_MONTHLY_STANDARD.getDic_id());
+        Double standard = dictionaryDao.getDictionaryNum(DictionaryCodeEnum.CONSUMP_MONTHLY_STANDARD.getDic_code(),user_id);
         Double surplus = standard - consumption;
         vo.setConsumption(consumption);
         vo.setSurplus(surplus);

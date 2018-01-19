@@ -56,10 +56,10 @@ public class ConsumptionMonthlyService {
             }
             for (int month : monthList) {
                 if (month<=12 && month >=10){
-                    lastmonth = now.get(Calendar.YEAR-1) +"-"+month;
+                    lastmonth = now.get(Calendar.YEAR)-1 +"-"+month;
                     lastsixmonth.add(lastmonth);
                 }else if (month>=7 && month<10){
-                    lastmonth = now.get(Calendar.YEAR-1) +"-0"+month;
+                    lastmonth = now.get(Calendar.YEAR)-1 +"-0"+month;
                     lastsixmonth.add(lastmonth);
                 }else if (month>0 && month<=6){
                     lastmonth = now.get(Calendar.YEAR) +"-0"+month;

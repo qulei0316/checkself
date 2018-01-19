@@ -1,6 +1,6 @@
 package com.qulei.schedule;
 
-import com.qulei.common.enums.DictionaryIdEnum;
+import com.qulei.common.enums.DictionaryCodeEnum;
 import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.CommonUtil;
@@ -10,7 +10,6 @@ import com.qulei.entity.bean.ConsumptionDaily;
 import com.qulei.entity.bean.ConsumptionDetail;
 import com.qulei.entity.bean.ConsumptionMonthly;
 import com.qulei.entity.bean.SysUser;
-import com.qulei.entity.dto.ConsumptionDailyDto;
 import com.qulei.entity.dto.SysUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -64,7 +63,7 @@ public class ConsumpJobs {
             daily.setConsump_date(today);
             daily.setExpense(daily_total);
             //查询消费标准
-            Double standard = dictionaryDao.getDictionaryNum(DictionaryIdEnum.CONSUMP_DAILY_STANDARD.getDic_id());
+            Double standard = dictionaryDao.getDictionaryNum(DictionaryCodeEnum.CONSUMP_DAILY_STANDARD.getDic_code(),sysUser.getUser_id());
             Integer is_over = 0;
             if (daily_total > standard){
                 is_over = 1;

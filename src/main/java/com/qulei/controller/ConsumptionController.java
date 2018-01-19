@@ -51,7 +51,7 @@ public class ConsumptionController {
     }
 
     //记录查询(按日期)
-    @GetMapping("/getdailyrecord")
+    @PostMapping("/getdailyrecord")
     public ResultVO getdailyrecord(@RequestBody ConsumptionDailyDto dailyDto,@RequestParam("token") String token){
         ConsumptionDailyListVO vo = new ConsumptionDailyListVO();
         List<ConsumpDailyVO> consumpDailyVOList = dailyService.getConsumpListBydaily(dailyDto, token);
@@ -81,19 +81,17 @@ public class ConsumptionController {
     }
 
 
-    //上周消费列表
-    @GetMapping("/getlastmonthlyrecord")
-    public ResultVO getlastmonthlyrecord(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+    //上周与本周消费列表
+    @GetMapping("/getweeklyrecord")
+    public ResultVO getmonthlyrecord(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+        WeeklyRecordVO vo = new WeeklyRecordVO();
         List<Double> last_week = dailyService.getLastweekTendency(user_id,token);
-        return ResultVOUtil.success(last_week);
+        List<Double> this_week = dailyService.getThisweekTendency(user_id,token);
+        vo.setLastweektd(last_week);
+        vo.setThisweektd(this_week);
+        return ResultVOUtil.success(vo);
     }
 
-    //本周消费列表
-    @GetMapping("/getthismonthlyrecord")
-    public ResultVO getthismonthlyrecord(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
-        List<Double> this_week = dailyService.getThisweekTendency(user_id,token);
-        return ResultVOUtil.success(this_week);
-    }
 
     //上个月消费占比
     @GetMapping("/getlastmonthproportion")
@@ -119,22 +117,30 @@ public class ConsumptionController {
     //获取单笔最高金额
     @GetMapping("/gethighestrecord")
     public ResultVO gethighestrecord (@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
-        List<ConsumpDetailVO> list = detailService.getHighestRecord(user_id,token);
-        return ResultVOUtil.success(list);
-    }
-
-
-    //获取消费比重最高
-    @GetMapping("/gethighestproportion")
-    public ResultVO gethighestproportion(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
-        ConsumpDetailVO vo = detailService.getHighestProportion(user_id, token);
+        ConsumpDetailVO vo = detailService.getHighestRecord(user_id,token);
         return ResultVOUtil.success(vo);
     }
+
+
+//    //获取消费比重最高
+//    @GetMapping("/gethighestproportion")
+//    public ResultVO gethighestproportion(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
+//        ConsumpDetailVO vo = detailService.getHighestProportion(user_id, token);
+//        return ResultVOUtil.success(vo);
+//    }
 
     //获取本月剩余预算
     @GetMapping("/getthismonthsurplus")
     public ResultVO getthismonthsurplus(@RequestParam("user_id")String user_id,@RequestParam("token")String token) throws ParseException {
         ThisMonthSurplusVO vo = detailService.getThisMonthConsumption(user_id,token);
+        return ResultVOUtil.success(vo);
+    }
+
+
+    //获取上月单日最高
+    @GetMapping("/gethighestdaily")
+    public ResultVO getlastmonthhighestdaily(@RequestParam("user_id")String user_id,@RequestParam("token")String token)throws ParseException {
+        ConsumpDailyVO vo = dailyService.getLastMonthHighest(user_id,token);
         return ResultVOUtil.success(vo);
     }
 }

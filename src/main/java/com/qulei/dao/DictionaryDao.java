@@ -10,8 +10,11 @@ import org.apache.ibatis.annotations.Param;
 public interface DictionaryDao {
 
     //查询字典内容（数字）
-    Double getDictionaryNum(@Param("dic_id") String dic_id);
+    Double getDictionaryNum(@Param("dic_code") String dic_code ,@Param("user_id")String user_id);
 
     //设置数字字典
     int setNumvalueDic(DictionaryDto dictionary);
+
+    //新增字典
+    int createNewDic(@Param("user_id") String user_id);
 }

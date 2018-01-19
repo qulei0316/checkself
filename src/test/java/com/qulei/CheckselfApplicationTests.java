@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.naming.CommunicationException;
 import java.text.ParseException;
+import java.util.Calendar;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -25,8 +26,9 @@ public class CheckselfApplicationTests {
 
 	@Test
 	public void testday() throws ParseException {
-		Long ls = CommonUtil.getThismonthFirstDay();
-		System.out.print(CommonUtil.stampToDate(ls));
+		String s = "2018-01-15";
+		Long a = CommonUtil.dateToStamp(s);
+		System.out.print(a);
 
 	}
 

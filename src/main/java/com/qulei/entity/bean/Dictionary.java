@@ -10,6 +10,9 @@ public class Dictionary {
     //编号
     private String dic_id;
 
+    //字典编号
+    private String dic_code;
+
     //用户编号
     private String user_id;
 

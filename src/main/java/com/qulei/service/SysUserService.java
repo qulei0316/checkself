@@ -1,7 +1,6 @@
 package com.qulei.service;
 
-import com.alibaba.fastjson.JSON;
-import com.qulei.common.exception.AuthorizeException;
+import com.qulei.dao.DictionaryDao;
 import com.qulei.dao.SysUserDao;
 import com.qulei.entity.bean.SysUser;
 import com.qulei.entity.dto.SysUserDto;
@@ -9,23 +8,18 @@ import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.*;
 import com.qulei.common.utils.constant.CookieConstants;
-import com.qulei.common.utils.constant.RedisConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2017/12/18.
@@ -38,6 +32,9 @@ public class SysUserService {
 
     @Autowired
     private SysUserDao sysUserDao;
+
+    @Autowired
+    private DictionaryDao dictionaryDao;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -74,7 +71,8 @@ public class SysUserService {
         String password = sysUserDto.getPassword();
         sysUserDto.setPassword(MD5Util.EncoderByMd5(password));
 
-        sysUserDto.setUser_id(UUIDUtil.createUUID());//生成主键
+        String user_id = UUIDUtil.createUUID();
+        sysUserDto.setUser_id(user_id);//生成主键
 
         //生成激活码
         String code = UUIDUtil.createUUID();
@@ -88,6 +86,12 @@ public class SysUserService {
         int i = sysUserDao.addSysUser(sysUserDto);
         if(i==0){
             throw new CheckSelfException(ExceptionEnum.REGIST_FAIL_ERROR);
+        }
+
+        //新增字典信息
+        int j = dictionaryDao.createNewDic(user_id);
+        if(i==0){
+            throw new CheckSelfException(ExceptionEnum.DICTIONARY_CREATE_ERROR);
         }
     }
 

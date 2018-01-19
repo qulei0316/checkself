@@ -30,11 +30,11 @@ public interface ConsumptionDetailDao {
     int deleteDetailRecord(ConsumptionDetail consumptionDetail);
 
     //获取最高记录
-    List<ConsumptionDetail> getHighestRecord(@Param("user_id") String user_id,@Param("first_day") Long first_day, @Param("last_day")Long last_day);
+    ConsumptionDetail getHighestRecord(@Param("user_id") String user_id,@Param("first_day") Long first_day, @Param("last_day")Long last_day);
 
-    //获取最高占比
-    ConsumptionDetail getHighestProportion(@Param("user_id") String user_id,@Param("first_day") Long first_day, @Param("last_day")Long last_day);
+//    //获取最高占比
+//    ConsumptionDetail getHighestProportion(@Param("user_id") String user_id,@Param("first_day") Long first_day, @Param("last_day")Long last_day);
 
     //获取本月已消费金额
-    Double getThisMonthConsumption(Long first_day, String user_id);
+    Double getThisMonthConsumption(@Param("first_day") Long first_day,@Param("user_id") String user_id);
 }

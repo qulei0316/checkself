@@ -8,11 +8,20 @@
 
     <!--查询字典内容（数字）-->
     <select id="getDictionaryNum" parameterType="String" resultType="Double">
-        SELECT value_num FROM DICTIONARY WHERE dic_id=#{dic_id}
+        SELECT value_num FROM DICTIONARY WHERE dic_code=#{dic_code} AND user_id = #{user_id}
     </select>
 
     <!--设置数字字典-->
     <update id="setNumvalueDic" parameterType="DictionaryDto">
         UPDATE DICTIONARY SET value_num = #{value_num} WHERE dic_id=#{dic_id} AND user_id = #{user_id}
     </update>
+
+    <!--新增用户字典-->
+    <insert id="createNewDic" parameterType="String">
+        INSERT INTO DICTIONARY(dic_id,dic_code,name,description,value_num,value_str,user_id) VALUE
+        (uuid(),'1002','单笔消费上限','',30,'',#{user_id}),
+        (uuid(),'1001','每月消费标准','',1500,'',#{user_id}),
+        (uuid(),'1000','每日消费标准','',50,'',#{user_id})
+    </insert>
+
 </mapper>

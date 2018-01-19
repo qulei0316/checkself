@@ -52,7 +52,8 @@ public enum ExceptionEnum {
 
     //字典模块
     DICTIONARY_SET_ERROR(1,"设置字典值失败" ),
-    NO_VALUE_NUM_ERROR(1,"请输入数值" );
+    NO_VALUE_NUM_ERROR(1,"请输入数值" ),
+    DICTIONARY_CREATE_ERROR(1,"新增字典失败" );
 
     //错误码
     private Integer code;

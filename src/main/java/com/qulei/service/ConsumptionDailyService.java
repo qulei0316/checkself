@@ -4,7 +4,7 @@ import com.qulei.VO.ConsumpDailyVO;
 import com.qulei.VO.ConsumpDetailVO;
 import com.qulei.VO.OverStandardVO;
 import com.qulei.common.enums.ConsumpTypeEnum;
-import com.qulei.common.enums.DictionaryIdEnum;
+import com.qulei.common.enums.DictionaryCodeEnum;
 import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.AuthorizeUtil;
@@ -185,7 +185,7 @@ public class ConsumptionDailyService {
      */
     @Transactional
     public OverStandardVO getOverStandardrecord(String user_id, String token) throws ParseException {
-        OverStandardVO standardVO = new OverStandardVO();
+        OverStandardVO standardVO = null;
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
@@ -196,27 +196,58 @@ public class ConsumptionDailyService {
         Long last_day = CommonUtil.getlastmonthlastday();
 
         //获取标准
-        Double standard = dictionaryDao.getDictionaryNum(DictionaryIdEnum.CONSUMP_DAILY_STANDARD.getDic_id());
+        Double standard = dictionaryDao.getDictionaryNum(DictionaryCodeEnum.CONSUMP_DAILY_STANDARD.getDic_code(),user_id);
 
         //查询上个月超标次数
         List<ConsumptionDaily> list = dailyDao.getLastMonthOverList(first_day,last_day,user_id,standard);
-        Integer over_num = list.size();
-        List<ConsumpDailyVO> consumpDailyVOList = new ArrayList<>();
-        for (ConsumptionDaily daily : list) {
-            ConsumpDailyVO vo = new ConsumpDailyVO();
-            vo.setId(daily.getId());
-            if (daily.getIs_over() == 0){
-                vo.setIs_over(StringConstants.not_over);
-            }else {
-                vo.setIs_over(StringConstants.over);
+        if (list.size()!=0) {
+            Integer over_num = list.size();
+            List<ConsumpDailyVO> consumpDailyVOList = new ArrayList<>();
+            for (ConsumptionDaily daily : list) {
+                ConsumpDailyVO vo = new ConsumpDailyVO();
+                vo.setId(daily.getId());
+                if (daily.getIs_over() == 0) {
+                    vo.setIs_over(StringConstants.not_over);
+                } else {
+                    vo.setIs_over(StringConstants.over);
+                }
+                vo.setConsump_date(CommonUtil.stampToDate(daily.getConsump_date()));
+                vo.setExpense(daily.getExpense());
+                consumpDailyVOList.add(vo);
             }
-            vo.setConsump_date(CommonUtil.stampToDate(daily.getConsump_date()));
-            vo.setExpense(daily.getExpense());
-            consumpDailyVOList.add(vo);
+
+            standardVO.setOver_num(over_num);
+            standardVO.setConsumpDailyVOList(consumpDailyVOList);
+        }
+        return standardVO;
+    }
+
+
+    /**
+     * 查询上月最高日
+     * @param user_id
+     * @param token
+     * @return
+     */
+    @Transactional
+    public ConsumpDailyVO getLastMonthHighest(String user_id, String token) throws ParseException {
+        ConsumpDailyVO vo = null;
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
 
-        standardVO.setOver_num(over_num);
-        standardVO.setConsumpDailyVOList(consumpDailyVOList);
-        return standardVO;
+        //获取上个月时间戳
+        Long first_day = CommonUtil.getlastmonthfirstday();
+        Long last_day = CommonUtil.getlastmonthlastday();
+
+        //获取最高日
+        ConsumptionDaily daily = dailyDao.getLastMonthHighest(first_day,last_day,user_id);
+        if (daily!=null) {
+            vo.setId(daily.getId());
+            vo.setExpense(daily.getExpense());
+            vo.setConsump_date(CommonUtil.stampToDate(daily.getConsump_date()));
+        }
+        return vo;
     }
 }
