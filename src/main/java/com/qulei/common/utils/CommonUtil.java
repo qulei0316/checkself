@@ -131,4 +131,20 @@ public class CommonUtil {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         return dateToStamp(stampToDate(calendar.getTimeInMillis()));
     }
+
+
+    /**
+     * 时间戳转化为cron（每天几时几分）
+     * @param ts
+     * @return
+     */
+    public static String timestampTocron(Long ts){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date(ts);
+        String res = simpleDateFormat.format(date);
+        String[] resSpl = res.split(":");
+        String cron = resSpl[2]+" "+resSpl[1]+" "+resSpl[0]+" * * ?";
+        return cron;
+    }
+
 }

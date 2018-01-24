@@ -23,7 +23,7 @@ public class DictionaryService {
 
 
     /**
-     * 设置数字字典
+     * 设置数字(浮点型)字典
      * @param dictionaryDto
      * @param token
      */

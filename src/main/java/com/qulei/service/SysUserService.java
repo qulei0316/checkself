@@ -1,5 +1,6 @@
 package com.qulei.service;
 
+import com.qulei.dao.CronDao;
 import com.qulei.dao.DictionaryDao;
 import com.qulei.dao.SysUserDao;
 import com.qulei.entity.bean.SysUser;
@@ -29,6 +30,9 @@ public class SysUserService {
 
     @Autowired
     private MailUtil mailUtil;
+
+    @Autowired
+    private CronDao cronDao;
 
     @Autowired
     private SysUserDao sysUserDao;
@@ -92,6 +96,12 @@ public class SysUserService {
         int j = dictionaryDao.createNewDic(user_id);
         if(i==0){
             throw new CheckSelfException(ExceptionEnum.DICTIONARY_CREATE_ERROR);
+        }
+
+        //新增定时信息
+        int z = cronDao.insertCron(user_id);
+        if (z==0){
+            throw new CheckSelfException(ExceptionEnum.CRON_INSERT_ERROR);
         }
     }
 

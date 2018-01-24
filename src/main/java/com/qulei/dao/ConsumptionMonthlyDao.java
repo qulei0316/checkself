@@ -13,4 +13,8 @@ public interface ConsumptionMonthlyDao {
 
     //录入月账单
     int createMonthlyRecord(ConsumptionMonthly consumptionMonthly);
+
+    //根据月份查询信息
+    ConsumptionMonthly getMonthlyRecord(@Param("month")String month);
+
 }

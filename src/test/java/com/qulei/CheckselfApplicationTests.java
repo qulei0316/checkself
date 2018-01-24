@@ -26,9 +26,7 @@ public class CheckselfApplicationTests {
 
 	@Test
 	public void testday() throws ParseException {
-		String s = "2018-01-15";
-		Long a = CommonUtil.dateToStamp(s);
-		System.out.print(a);
+
 
 	}
 

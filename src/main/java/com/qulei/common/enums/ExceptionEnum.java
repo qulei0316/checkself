@@ -50,6 +50,12 @@ public enum ExceptionEnum {
     PLAN_UPDATE_ERROR(1,"修改任务失败"),
     PLAN_DEADLINE_BEFORE_ERROR(1,"请设置正确的截止日期"),
 
+
+    //定时模块
+    CRON_EDIT_ERROR(1,"定时数据更新失败"),
+    CRON_GET_ERROR(1,"定时数据查询失败" ),
+    CRON_INSERT_ERROR(11,"定时信息初始化失败" ),
+
     //字典模块
     DICTIONARY_SET_ERROR(1,"设置字典值失败" ),
     NO_VALUE_NUM_ERROR(1,"请输入数值" ),

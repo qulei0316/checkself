@@ -17,4 +17,10 @@
         VALUES (#{id},#{user_id},#{expense},#{consump_month},#{is_over})
     </insert>
 
+    <!--获取记录-->
+    <select id="getMonthlyRecord" parameterType="String" resultType="ConsumptionMonthly">
+        SELECT <include refid="Base_column"/> FROM CONSUMPTION_MONTHLY
+        WHERE consump_month = #{month} AND user_id=#{user_id}
+    </select>
+
 </mapper>

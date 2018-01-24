@@ -87,4 +87,10 @@
         AND consump_date &gt;= #{first_day}
         AND user_id = #{user_id}
     </select>
+
+    <!--获取昨日记录-->
+    <select id="getRecordByDay" parameterType="Long" resultType="ConsumptionDaily">
+        SELECT <include refid="Base_column"/> FROM CONSUMPTION_DAILY
+        WHERE consump_date = #{day}
+    </select>
 </mapper>

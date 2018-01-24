@@ -37,4 +37,7 @@ public interface ConsumptionDailyDao {
 
     //获取上个月最高
     ConsumptionDaily getLastMonthHighest(@Param("first_day") Long first_day,@Param("last_day") Long last_day, @Param("user_id") String user_id);
+
+    //查询昨日记录
+    ConsumptionDaily getRecordByDay(@Param("day")Long day);
 }
