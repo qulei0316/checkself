@@ -5,12 +5,10 @@ import com.qulei.VO.ResultVO;
 import com.qulei.common.enums.ExceptionEnum;
 import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.AuthorizeUtil;
-import com.qulei.common.utils.CommonUtil;
 import com.qulei.common.utils.ResultVOUtil;
-import com.qulei.common.utils.UUIDUtil;
 import com.qulei.entity.bean.Cron;
-import com.qulei.entity.dto.ConsumpScheduleDto;
-import com.qulei.schedule.ConsumpRemindJob;
+import com.qulei.entity.dto.ScheduleDto;
+import com.qulei.schedule.RemindJob;
 import com.qulei.service.CronService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,29 +30,29 @@ public class ScheduleController {
     @Autowired
     private CronService cronService;
 
-    List<ConsumpRemindJob> consumpRemindJobs = new ArrayList<>();
+    List<RemindJob> remindJobs = new ArrayList<>();
 
     //消费日提醒开启任务
-    @PostMapping("/startconsumpremind")
+    @PostMapping("/startremind")
     @Transactional
-    public ResultVO startconsumpremind(@RequestBody ConsumpScheduleDto consumpScheduleDto, @RequestParam("token")String token){
+    public ResultVO startremind(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token){
         //鉴权
-        String user_id = consumpScheduleDto.getUser_id();
-        String cron = consumpScheduleDto.getCron();
+        String user_id = scheduleDto.getUser_id();
+        String cron = scheduleDto.getCron();
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
-        ConsumpRemindJob job = new ConsumpRemindJob();
+        RemindJob job = new RemindJob();
         //选择调用的方法
-        Integer type = consumpScheduleDto.getType();
-        Integer method = consumpScheduleDto.getMethod();
+        Integer type = scheduleDto.getType();
+        Integer method = scheduleDto.getMethod();
         job.setType(type);
         job.setMethod(method);
         job.startJob(cron,user_id);
-        consumpRemindJobs.add(job);
+        remindJobs.add(job);
         //数据库
         Cron dto = new Cron();
-        dto.setCron_date(consumpScheduleDto.getCron_date());
+        dto.setCron_date(scheduleDto.getCron_date());
         dto.setRemind_method(method);
         dto.setRemind_type(type);
         dto.setStatus(1);
@@ -65,29 +63,29 @@ public class ScheduleController {
 
 
     //修改消费提醒时间
-    @PostMapping("/updateconsumpremind")
+    @PostMapping("/updateremind")
     @Transactional
-    public ResultVO updateconsumpremind(@RequestBody ConsumpScheduleDto consumpScheduleDto, @RequestParam("token")String token) {
+    public ResultVO updateremind(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token) {
         //鉴权
-        String user_id = consumpScheduleDto.getUser_id();
-        String cronstr = consumpScheduleDto.getCron();
+        String user_id = scheduleDto.getUser_id();
+        String cronstr = scheduleDto.getCron();
         if (!authorizeUtil.verify(user_id, token)) {
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
-        Integer method = consumpScheduleDto.getMethod();
-        Integer type = consumpScheduleDto.getType();
+        Integer method = scheduleDto.getMethod();
+        Integer type = scheduleDto.getType();
         //查找并修改
-        for (ConsumpRemindJob consumpRemindJob : consumpRemindJobs) {
-            if (user_id.equals(consumpRemindJob.getUser_id())
-                    && method == consumpRemindJob.getMethod()
-                        && type == consumpRemindJob.getType()){//选择调用的方法
-                consumpRemindJob.updateJob(cronstr);
+        for (RemindJob remindJob : remindJobs) {
+            if (user_id.equals(remindJob.getUser_id())
+                        && type == remindJob.getType()){//选择调用的方法
+                remindJob.setMethod(method);
+                remindJob.updateJob(cronstr);
                 break;
             }
         }
         //数据库
         Cron dto = new Cron();
-        dto.setCron_date(consumpScheduleDto.getCron_date());
+        dto.setCron_date(scheduleDto.getCron_date());
         dto.setRemind_method(method);
         dto.setRemind_type(type);
         dto.setStatus(1);
@@ -98,29 +96,26 @@ public class ScheduleController {
 
 
     //停止提醒任务
-    @PostMapping("/cancelconsumpremind")
+    @PostMapping("/cancelremind")
     @Transactional
-    public ResultVO cancelconsumpremind(@RequestBody ConsumpScheduleDto consumpScheduleDto,@RequestParam("token")String token){
+    public ResultVO cancelremind(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token){
         //鉴权
-        String user_id = consumpScheduleDto.getUser_id();
+        String user_id = scheduleDto.getUser_id();
         if (!authorizeUtil.verify(user_id, token)) {
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
-        Integer method = consumpScheduleDto.getMethod();
-        Integer type = consumpScheduleDto.getType();
+        Integer type = scheduleDto.getType();
         //查找并停止
-        for (ConsumpRemindJob consumpRemindJob : consumpRemindJobs) {
-            if (user_id.equals(consumpRemindJob.getUser_id())
-                    && method == consumpRemindJob.getMethod()
-                        && type == consumpRemindJob.getType()){
-                consumpRemindJob.stopCron();
-                consumpRemindJobs.remove(consumpRemindJob);
+        for (RemindJob remindJob : remindJobs) {
+            if (user_id.equals(remindJob.getUser_id())
+                        && type == remindJob.getType()){
+                remindJob.stopCron();
+                remindJobs.remove(remindJob);
                 break;
             }
         }
         //数据库
         Cron dto = new Cron();
-        dto.setRemind_method(method);
         dto.setRemind_type(type);
         dto.setStatus(0);
         dto.setUser_id(user_id);
@@ -133,8 +128,8 @@ public class ScheduleController {
      * 获取定时任务的信息
      */
     @PostMapping("/getscheduleinfo")
-    public ResultVO getscheduleinfo(@RequestBody ConsumpScheduleDto consumpScheduleDto,@RequestParam("token")String token){
-        CronVO vo = cronService.getcron(consumpScheduleDto,token);
+    public ResultVO getscheduleinfo(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token){
+        CronVO vo = cronService.getcron(scheduleDto,token);
         return ResultVOUtil.success(vo);
     }
 }

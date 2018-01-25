@@ -7,7 +7,7 @@ import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.AuthorizeUtil;
 import com.qulei.dao.CronDao;
 import com.qulei.entity.bean.Cron;
-import com.qulei.entity.dto.ConsumpScheduleDto;
+import com.qulei.entity.dto.ScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class CronService {
      * @return
      */
     @Transactional
-    public CronVO getcron(ConsumpScheduleDto dto,String token){
+    public CronVO getcron(ScheduleDto dto, String token){
         CronVO vo = new CronVO();
         //鉴权
         String user_id = dto.getUser_id();
@@ -57,7 +57,6 @@ public class CronService {
         }
         Cron cronDto = new Cron();
         cronDto.setUser_id(user_id);
-        cronDto.setStatus(1);
         cronDto.setRemind_type(dto.getType());
         Cron cron = cronDao.getCron(cronDto);
         if (cron==null){

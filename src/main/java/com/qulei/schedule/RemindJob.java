@@ -26,7 +26,7 @@ import java.util.concurrent.ScheduledFuture;
  */
 @Component
 @Slf4j
-public class ConsumpRemindJob {
+public class RemindJob {
 
     private static final Long ONE_DAY_SECOND = 24*60*60*1000L;
     @Autowired

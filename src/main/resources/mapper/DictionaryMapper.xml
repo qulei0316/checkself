@@ -13,7 +13,7 @@
 
     <!--设置数字字典-->
     <update id="setNumvalueDic" parameterType="DictionaryDto">
-        UPDATE DICTIONARY SET value_num = #{value_num} WHERE dic_id=#{dic_id} AND user_id = #{user_id}
+        UPDATE DICTIONARY SET value_num = #{value_num} WHERE dic_code=#{dic_code} AND user_id = #{user_id}
     </update>
 
     <!--新增用户字典-->

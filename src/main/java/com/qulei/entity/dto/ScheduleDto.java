@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Administrator on 2018/1/23.
  */
 @Data
-public class ConsumpScheduleDto {
+public class ScheduleDto {
     private Integer method;
 
     private Integer type;

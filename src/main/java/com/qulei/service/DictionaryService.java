@@ -40,7 +40,7 @@ public class DictionaryService {
             throw new CheckSelfException(ExceptionEnum.NO_VALUE_NUM_ERROR);
         }
 
-        dictionaryDto.setDic_id(dictionaryDto.getDictionaryCodeEnum().getDic_code());
+        dictionaryDto.setDic_code(dictionaryDto.getDictionaryCodeEnum().getDic_code());
         int i = dictionaryDao.setNumvalueDic(dictionaryDto);
         if (i==0){
             throw new CheckSelfException(ExceptionEnum.DICTIONARY_SET_ERROR);
