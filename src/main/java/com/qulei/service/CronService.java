@@ -63,7 +63,8 @@ public class CronService {
             throw new CheckSelfException(ExceptionEnum.CRON_GET_ERROR);
         }
         vo.setCron(cron.getCron_date());
-        vo.setMethod_name(RemindMethodEnum.getMethodName(cron.getRemind_method()));
+        vo.setMethod(cron.getRemind_method());
+        vo.setStatus(cron.getStatus());
         return vo;
     }
 }

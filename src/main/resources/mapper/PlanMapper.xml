@@ -15,8 +15,8 @@
 
     <!--新增计划-->
     <insert id="addPlan" parameterType="Plan" >
-        INSERT INTO plan (plan_id,plan_name,user_id,content,deadline,level,state)
-        VALUES (#{plan_id},#{plan_name},#{user_id},#{content},#{deadline},#{level},#{state})
+        INSERT INTO plan (plan_id,plan_name,user_id,content,deadline,level,state,create_time)
+        VALUES (#{plan_id},#{plan_name},#{user_id},#{content},#{deadline},#{level},#{state},#{create_time})
     </insert>
 
 
@@ -31,11 +31,37 @@
     <update id="updatePlan" parameterType="Plan">
         UPDATE plan
         <set>
-            <if test="content!=null and content!=''">content=#{content}</if>
-            <if test="deadline!=null">=deadline#{deadline}</if>
             <if test="level!=null">level=#{level}</if>
             <if test="state!=null">state=#{state}</if>
         </set>
         WHERE plan_id=#{plan_id}
     </update>
+
+    <!--获取计划列表-->
+    <select id="getPlanListByPage" resultType="Plan" parameterType="PlanDto">
+        SELECT <include refid="Base_column"/> FROM plan
+        WHERE 1=1
+        <if test="status !=null">AND status = #{status}</if>
+        <if test="level !=null">AND level = #{level}</if>
+        <if test="start_time !=null">AND deadline &gt;= #{start_time}</if>
+        <if test="end_time !=null">AND deadline &lt; #{end_time}</if>
+        AND user_id=#{user_id}
+        ORDER BY create_time DESC LIMIT #{startIndex},10
+    </select>
+
+
+    <!--获取列表总数-->
+    <select id="getTotalSize" parameterType="PlanDto" resultType="Integer">
+        SELECT COUNT(1) FROM plan WHERE 1=1
+        <if test="status !=null">AND status = #{status}</if>
+        <if test="level !=null">AND level = #{level}</if>
+        <if test="start_time !=null">AND deadline &gt;= #{start_time}</if>
+        <if test="end_time !=null">AND deadline &lt; #{end_time}</if>
+        AND user_id = #{user_id}
+    </select>
+
+    <!--删除任务-->
+    <delete id="deletePlan" parameterType="String">
+        DELETE FROM plan WHERE plan_id = #{plan_id}
+    </delete>
 </mapper>

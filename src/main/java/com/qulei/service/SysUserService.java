@@ -78,14 +78,6 @@ public class SysUserService {
         String user_id = UUIDUtil.createUUID();
         sysUserDto.setUser_id(user_id);//生成主键
 
-        //生成激活码
-        String code = UUIDUtil.createUUID();
-        sysUserDto.setCode(code);
-
-        //发送邮件
-        String tomail = sysUserDto.getMail();
-        mailUtil.sendHtmlMail(tomail,code);
-
         //添加用户
         int i = sysUserDao.addSysUser(sysUserDto);
         if(i==0){
@@ -102,32 +94,6 @@ public class SysUserService {
         int z = cronDao.insertCron(user_id);
         if (z==0){
             throw new CheckSelfException(ExceptionEnum.CRON_INSERT_ERROR);
-        }
-    }
-
-
-    /**
-     * 激活用户
-     * @param code
-     */
-    @Transactional
-    public void activeSysUser(String code){
-        //根据code查询用户
-        SysUser sysUser = sysUserDao.getSysUserByCode(code);
-        if (sysUser == null){
-            throw new CheckSelfException(ExceptionEnum.ACTIVE_NOTFOUND_ERROR);
-        }
-        if (sysUser.getState() == 1){//若状态为已激活
-            throw new CheckSelfException(ExceptionEnum.ACTIVE_HAVEACTIVE_ERROR);
-        }
-
-        //将用户状态设置为激活
-        SysUserDto sysUserDto = new SysUserDto();
-        sysUserDto.setState(1);//设置状态为已激活
-        sysUserDto.setUser_id(sysUser.getUser_id());
-        int i = sysUserDao.updateSysUser(sysUserDto);
-        if (i==0){
-            throw new CheckSelfException(ExceptionEnum.ACTIVE_FAIL_ERROR);
         }
     }
 

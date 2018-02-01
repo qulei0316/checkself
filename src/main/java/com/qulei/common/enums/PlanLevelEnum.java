@@ -12,8 +12,28 @@ public enum PlanLevelEnum {
 
     private String level;
 
-    PlanLevelEnum(Integer code,String level){
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    PlanLevelEnum(Integer code, String level){
         this.code = code;
         this.level = level;
+    }
+
+
+    public static String getLevelName(int code){
+        String level = null;
+        for (PlanLevelEnum planLevelEnum: values()){
+            if (planLevelEnum.getCode() == code){
+                level = planLevelEnum.getLevel();
+                break;
+            }
+        }
+        return level;
     }
 }

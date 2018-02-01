@@ -10,7 +10,9 @@ import java.util.Date;
 @Data
 public class CronVO {
 
-    private String method_name;
+    private Integer method;
 
     private Date cron;
+
+    private Integer status;
 }

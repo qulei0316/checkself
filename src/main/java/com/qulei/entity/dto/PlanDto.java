@@ -1,9 +1,12 @@
-package com.qulei.entity.bean;
+package com.qulei.entity.dto;
 
 import lombok.Data;
 
+/**
+ * Created by Administrator on 2018/1/30.
+ */
 @Data
-public class Plan {
+public class PlanDto {
 
     //编号
     private String plan_id;
@@ -29,5 +32,18 @@ public class Plan {
     //创建时间
     private Long create_time;
 
-    private int yn;
+    //页码
+    private Integer pageIndex;
+
+    //每页个数
+    private Integer pageSize;
+
+    //起始数
+    private Integer startIndex;
+
+    //开始时间
+    private Long start_time;
+
+    //结束时间
+    private Long end_time;
 }

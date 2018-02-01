@@ -25,4 +25,15 @@ public enum PlanStateEnum {
         this.code = code;
         this.state = state;
     }
+
+    public static String getStatusName(int code){
+        String status = null;
+        for (PlanStateEnum PlanStateEnum: values()){
+            if (PlanStateEnum.getCode() == code){
+                status = PlanStateEnum.getState();
+                break;
+            }
+        }
+        return status;
+    }
 }

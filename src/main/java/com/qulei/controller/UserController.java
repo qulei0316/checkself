@@ -74,15 +74,15 @@ public class UserController {
     }
 
 
-    /**
-     * 激活用户
-     * @param code
-     * @return
-     */
-    @PostMapping("/active")
-    public ResultVO active(@RequestParam("code") String code){
-        sysUserService.activeSysUser(code);
-        return ResultVOUtil.success();
-    }
+//    /**
+//     * 发送验证码
+//     * @param code
+//     * @return
+//     */
+//    @PostMapping("/active")
+//    public ResultVO active(@RequestParam("code") String code){
+//        sysUserService.activeSysUser(code);
+//        return ResultVOUtil.success();
+//    }
 
 }

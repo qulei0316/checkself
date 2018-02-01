@@ -1,6 +1,7 @@
 package com.qulei.dao;
 
 import com.qulei.entity.bean.Plan;
+import com.qulei.entity.dto.PlanDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,4 +22,13 @@ public interface PlanDao {
 
     //修改计划
     int updatePlan(Plan plan);
+
+    //获取计划列表
+    List<Plan> getPlanListByPage(PlanDto planDto);
+
+    //获取列表总数
+    Integer getTotalSize(PlanDto planDto);
+
+    //删除计划
+    int deletePlan(@Param("plan_id") String plan_id);
 }

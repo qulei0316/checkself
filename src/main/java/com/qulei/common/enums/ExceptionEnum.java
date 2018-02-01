@@ -49,7 +49,7 @@ public enum ExceptionEnum {
     PLAN_CREATE_ERROR(1,"创建任务失败"),
     PLAN_UPDATE_ERROR(1,"修改任务失败"),
     PLAN_DEADLINE_BEFORE_ERROR(1,"请设置正确的截止日期"),
-
+    PLAN_DELETE_ERROR(1,"删除任务失败" ),
 
     //定时模块
     CRON_EDIT_ERROR(1,"定时数据更新失败"),

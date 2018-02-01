@@ -1,12 +1,16 @@
 package com.qulei.service;
 
+import com.qulei.VO.PlanVO;
 import com.qulei.common.enums.ExceptionEnum;
+import com.qulei.common.enums.PlanLevelEnum;
 import com.qulei.common.enums.PlanStateEnum;
 import com.qulei.common.exception.CheckSelfException;
+import com.qulei.common.utils.AuthorizeUtil;
 import com.qulei.common.utils.CommonUtil;
 import com.qulei.common.utils.UUIDUtil;
 import com.qulei.dao.PlanDao;
 import com.qulei.entity.bean.Plan;
+import com.qulei.entity.dto.PlanDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,24 +24,60 @@ import java.util.List;
 @Service
 public class PlanService {
 
-    @Autowired
-    private SysUserService sysUserService;
+    private static final Long ONE_DAY_SECOND = 3600*24*1000L;
 
     @Autowired
     private PlanDao planDao;
 
+    @Autowired
+    private AuthorizeUtil authorizeUtil;
+
     //查询计划列表(进行中)
     @Transactional
-    public List getPlanList(String user_id){
+    public List<PlanVO> getPlanList(PlanDto planDto, String token){
+        List<PlanVO> planVOList = null;
+        String user_id = planDto.getUser_id();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+
+        //参数设置
+        Long start = planDto.getStart_time();
+        if (start!=null){
+            planDto.setEnd_time(start+ONE_DAY_SECOND);
+        }
+        //设置分页
+        planDto.setStartIndex((planDto.getPageIndex()-1)*10);
+
         //获取计划列表
-        List<Plan> planList = planDao.getPlanlistInProcess(user_id);
-        return planList;
+        List<Plan> planList = planDao.getPlanListByPage(planDto);
+        if (planList!=null){
+            for (Plan plan : planList) {
+                PlanVO vo = new PlanVO();
+                vo.setPlan_id(plan.getPlan_id());
+                vo.setContent(plan.getContent());
+                vo.setPlan_name(plan.getPlan_name());
+                vo.setUser_id(plan.getUser_id());
+                vo.setCreate_time(CommonUtil.stampToTime(plan.getCreate_time()));
+                vo.setDeadline(CommonUtil.stampToTime(plan.getCreate_time()));
+                vo.setLevel(PlanLevelEnum.getLevelName(plan.getLevel()));
+                vo.setStatus(PlanStateEnum.getStatusName(plan.getStatus()));
+                planVOList.add(vo);
+            }
+        }
+        return planVOList;
     }
 
 
     //新增计划
     @Transactional
-    public void addPlan(HttpServletRequest request,Plan plan){
+    public void addPlan(Plan plan,String token){
+        String user_id = plan.getUser_id();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
 
         //数据判断
         if (CommonUtil.isStringEmpty(plan.getPlan_name())){
@@ -55,8 +95,8 @@ public class PlanService {
 
         //设置参数
         plan.setPlan_id(UUIDUtil.createUUID());
-        plan.setState(PlanStateEnum.INPROCESS.getCode());
-      //  plan.setUser_id();
+        plan.setStatus(PlanStateEnum.INPROCESS.getCode());
+        plan.setCreate_time(System.currentTimeMillis());
 
         //插入
         int i = planDao.addPlan(plan);
@@ -67,14 +107,39 @@ public class PlanService {
 
 
 
-    //计划延期
+    /**
+     * 获取记录总数
+     * @param planDto
+     * @param token
+     * @return
+     */
     @Transactional
-    public void relayPlan(Plan plan){
-        Plan plan1 = planDao.getPlan(plan);
+    public Integer getTotalSize(PlanDto planDto,String token) {
+        String user_id = planDto.getUser_id();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+        //参数设置
+        Long start = planDto.getStart_time();
+        if (start!=null){
+            planDto.setEnd_time(start+ONE_DAY_SECOND);
+        }
 
-        //参数判别
-        if (plan.getDeadline() <= plan1.getDeadline()){
-            throw new CheckSelfException(ExceptionEnum.PLAN_DEADLINE_BEFORE_ERROR);
+        Integer size = planDao.getTotalSize(planDto);
+        return size;
+    }
+
+    /**
+     * 修改计划
+     * @param plan
+     * @param token
+     */
+    public void editPlan(Plan plan, String token) {
+        String user_id = plan.getUser_id();
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
 
         int i = planDao.updatePlan(plan);
@@ -83,38 +148,20 @@ public class PlanService {
         }
     }
 
+    /**
+     * 删除记录
+     * @param plan_id
+     * @param token
+     */
+    public void deletePlan(String plan_id,String user_id, String token) {
+        //鉴权
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
 
-
-    //计划完成
-    @Transactional
-    public void finishPlan(Plan plan){
-        plan.setState(PlanStateEnum.FINISHED.getCode());
-        int i = planDao.updatePlan(plan);
+        int i = planDao.deletePlan(plan_id);
         if (i==0){
-            throw new CheckSelfException(ExceptionEnum.PLAN_UPDATE_ERROR);
+            throw new CheckSelfException(ExceptionEnum.PLAN_DELETE_ERROR);
         }
     }
-
-
-    //计划暂缓
-    @Transactional
-    public void pausePlan(Plan plan){
-        plan.setState(PlanStateEnum.RELAY.getCode());
-        int i = planDao.updatePlan(plan);
-        if (i==0){
-            throw new CheckSelfException(ExceptionEnum.PLAN_UPDATE_ERROR);
-        }
-    }
-
-
-    //放弃计划
-    @Transactional
-    public void abandonPlan(Plan plan){
-        plan.setState(PlanStateEnum.ABANDON.getCode());
-        int i = planDao.updatePlan(plan);
-        if (i==0){
-            throw new CheckSelfException(ExceptionEnum.PLAN_UPDATE_ERROR);
-        }
-    }
-
 }
