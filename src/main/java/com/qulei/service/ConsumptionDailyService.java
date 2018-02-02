@@ -185,7 +185,7 @@ public class ConsumptionDailyService {
      */
     @Transactional
     public OverStandardVO getOverStandardrecord(String user_id, String token) throws ParseException {
-        OverStandardVO standardVO = null;
+        OverStandardVO standardVO = new OverStandardVO();
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
@@ -231,7 +231,7 @@ public class ConsumptionDailyService {
      */
     @Transactional
     public ConsumpDailyVO getLastMonthHighest(String user_id, String token) throws ParseException {
-        ConsumpDailyVO vo = null;
+        ConsumpDailyVO vo = new ConsumpDailyVO();
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);

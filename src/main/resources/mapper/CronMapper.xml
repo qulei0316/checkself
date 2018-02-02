@@ -25,11 +25,12 @@
     <update id="updateCron" parameterType="Cron">
         UPDATE CRON
         <set>
-            <if test="cron_date!=null">cron_date=#{cron_date}</if>
-            <if test="remind_method !=null">AND remind_method=#{remind_method}</if>
-            <if test="state!=null">state=#{state}</if>
+            <if test="cron_date!=null">cron_date=#{cron_date},</if>
+            <if test="remind_method !=null">remind_method=#{remind_method},</if>
+            <if test="status!=null">status=#{status}</if>
         </set>
         WHERE user_id = #{user_id}
-        AND remind_type = #{remind_type}
+        <if test="remind_type!=null">AND remind_type = #{remind_type}</if>
+        <if test="plan_id!=null and plan_id!=''">AND plan_id=#{plan_id}</if>
     </update>
 </mapper>

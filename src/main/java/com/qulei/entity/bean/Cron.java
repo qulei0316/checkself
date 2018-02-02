@@ -16,6 +16,8 @@ public class Cron {
 
     private Integer remind_method;
 
+    private String plan_id;
+
     private String user_id;
 
     private Date cron_date;

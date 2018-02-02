@@ -35,7 +35,7 @@ public class SysUser {
     private Date create_time;
 
     //激活码
-    private Integer code;
+    private String code;
 
     //激活状态：0：未激活，1：激活
     private Integer state;

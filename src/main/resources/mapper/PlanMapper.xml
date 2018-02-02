@@ -3,20 +3,20 @@
 <mapper namespace="com.qulei.dao.PlanDao">
 
     <sql id="Base_column">
-        PLAN_ID,PLAN_NAME,USER_ID,CONTENT,DEADLINE,LEVEL,STATE,CREATE_TIME
+        PLAN_ID,PLAN_NAME,USER_ID,CONTENT,DEADLINE,LEVEL,STATUS,CREATE_TIME
     </sql>
 
     <!--查询列表(进行中)-->
     <select id="getPlanlistInProcess" parameterType="String" resultType="Plan">
-        SELECT <include refid="Base_column"/> FROM PLAN WHERE state = 1
+        SELECT <include refid="Base_column"/> FROM PLAN WHERE STATUS = 1
         AND user_id=#{user_id} ORDER BY create_time DESC
     </select>
 
 
     <!--新增计划-->
     <insert id="addPlan" parameterType="Plan" >
-        INSERT INTO plan (plan_id,plan_name,user_id,content,deadline,level,state,create_time)
-        VALUES (#{plan_id},#{plan_name},#{user_id},#{content},#{deadline},#{level},#{state},#{create_time})
+        INSERT INTO plan (plan_id,plan_name,user_id,content,deadline,level,status,create_time)
+        VALUES (#{plan_id},#{plan_name},#{user_id},#{content},#{deadline},#{level},#{status},#{create_time})
     </insert>
 
 
@@ -31,8 +31,8 @@
     <update id="updatePlan" parameterType="Plan">
         UPDATE plan
         <set>
-            <if test="level!=null">level=#{level}</if>
-            <if test="state!=null">state=#{state}</if>
+            <if test="level!=null">level=#{level},</if>
+            <if test="status!=null">status=#{status}</if>
         </set>
         WHERE plan_id=#{plan_id}
     </update>

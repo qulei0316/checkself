@@ -56,8 +56,12 @@ public class ConsumptionController {
         ConsumptionDailyListVO vo = new ConsumptionDailyListVO();
         List<ConsumpDailyVO> consumpDailyVOList = dailyService.getConsumpListBydaily(dailyDto, token);
         Integer size = dailyService.getConsumpListSizeBydaily(dailyDto, token);
-        vo.setConsumpDailyVOList(consumpDailyVOList);
-        vo.setTotalSize(size);
+        if (consumpDailyVOList!=null) {
+            vo.setConsumpDailyVOList(consumpDailyVOList);
+        }
+        if (size!=null) {
+            vo.setTotalSize(size);
+        }
         return ResultVOUtil.success(vo);
     }
 
@@ -68,8 +72,12 @@ public class ConsumptionController {
         ConsumptionDetailListVO vo = new ConsumptionDetailListVO();
         List<ConsumpDetailVO> consumptionDetailList = detailService.getConsumpListByrecord(consumptionDetailDto,token);
         Integer size = detailService.getConsumptionListSize(consumptionDetailDto,token);
-        vo.setConsumptionDetailList(consumptionDetailList);
-        vo.setTotalSize(size);
+        if (consumptionDetailList!=null) {
+            vo.setConsumptionDetailList(consumptionDetailList);
+        }
+        if (size!=null) {
+            vo.setTotalSize(size);
+        }
         return ResultVOUtil.success(vo);
     }
 
@@ -87,8 +95,12 @@ public class ConsumptionController {
         WeeklyRecordVO vo = new WeeklyRecordVO();
         List<Double> last_week = dailyService.getLastweekTendency(user_id,token);
         List<Double> this_week = dailyService.getThisweekTendency(user_id,token);
-        vo.setLastweektd(last_week);
-        vo.setThisweektd(this_week);
+        if (last_week!=null) {
+            vo.setLastweektd(last_week);
+        }
+        if (this_week!=null) {
+            vo.setThisweektd(this_week);
+        }
         return ResultVOUtil.success(vo);
     }
 

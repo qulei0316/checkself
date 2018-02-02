@@ -76,7 +76,7 @@ public class ConsumptionDetailService {
 
         //判断录入记录是否是当天记录
         Long today = CommonUtil.getTodayDate();
-        if (today != consumptionDetail.getConsump_date()){
+        if (!today.equals(consumptionDetail.getConsump_date())){
             //修改日消费记录
             ConsumptionDaily daily = new ConsumptionDaily();
             daily.setUser_id(consumptionDetail.getUser_id());
@@ -236,7 +236,6 @@ public class ConsumptionDetailService {
      */
     @Transactional
     public ConsumpDetailVO getHighestRecord(String user_id, String token) throws ParseException {
-        List<ConsumpDetailVO> list = new ArrayList<>();
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
@@ -247,7 +246,7 @@ public class ConsumptionDetailService {
         Long last_day = CommonUtil.getlastmonthlastday();
 
         ConsumptionDetail detail = detailDao.getHighestRecord(user_id,first_day,last_day);
-        ConsumpDetailVO vo = null;
+        ConsumpDetailVO vo = new ConsumpDetailVO();
         if (detail != null) {
                 vo.setExpense(detail.getExpense());
                 vo.setConsump_desc(detail.getConsump_desc());

@@ -5,7 +5,8 @@ package com.qulei.common.enums;
  */
 public enum RemindTypeEnum {
     DAILY_REMIND(1,"日消费提醒"),
-    MONTHLY_REMIND(2,"月消费提醒");
+    MONTHLY_REMIND(2,"月消费提醒"),
+    PLAN_REMIND(3,"计划提醒");
 
     private Integer code;
 

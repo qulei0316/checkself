@@ -11,11 +11,13 @@ import java.util.Date;
 public class ScheduleDto {
     private Integer method;
 
+    private String plan_id;
+
     private Integer type;
 
     private String user_id;
 
-    private String cron;
+    private Long cron;
 
     private Date cron_date;
 }

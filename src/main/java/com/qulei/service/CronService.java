@@ -67,4 +67,23 @@ public class CronService {
         vo.setStatus(cron.getStatus());
         return vo;
     }
+
+
+    /**
+     * 新增cron
+     * @param dto
+     * @param token
+     */
+    @Transactional
+    public void addCron(Cron dto, String token) {
+        //鉴权
+        String user_id = cron.getUser_id();
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+        int i = cronDao.addCron(dto);
+        if (i==0){
+            throw new CheckSelfException(ExceptionEnum.CRON_EDIT_ERROR);
+        }
+    }
 }

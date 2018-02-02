@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class PlanService {
     //查询计划列表(进行中)
     @Transactional
     public List<PlanVO> getPlanList(PlanDto planDto, String token){
-        List<PlanVO> planVOList = null;
+        List<PlanVO> planVOList = new ArrayList<>();
         String user_id = planDto.getUser_id();
         //鉴权
         if (!authorizeUtil.verify(user_id,token)){
@@ -56,13 +57,19 @@ public class PlanService {
             for (Plan plan : planList) {
                 PlanVO vo = new PlanVO();
                 vo.setPlan_id(plan.getPlan_id());
-                vo.setContent(plan.getContent());
+                if (plan.getContent()!=null) {
+                    vo.setContent(plan.getContent());
+                }
                 vo.setPlan_name(plan.getPlan_name());
                 vo.setUser_id(plan.getUser_id());
                 vo.setCreate_time(CommonUtil.stampToTime(plan.getCreate_time()));
-                vo.setDeadline(CommonUtil.stampToTime(plan.getCreate_time()));
+                if(plan.getDeadline()!=null) {
+                    vo.setDeadline(CommonUtil.stampToTime(plan.getDeadline()));
+                }
                 vo.setLevel(PlanLevelEnum.getLevelName(plan.getLevel()));
                 vo.setStatus(PlanStateEnum.getStatusName(plan.getStatus()));
+                vo.setUpdate_level(plan.getLevel());
+                vo.setUpdate_status(plan.getStatus());
                 planVOList.add(vo);
             }
         }
@@ -83,15 +90,15 @@ public class PlanService {
         if (CommonUtil.isStringEmpty(plan.getPlan_name())){
             throw new CheckSelfException(ExceptionEnum.PLAN_NAME_EMPTY_ERROR);
         }
-        if (CommonUtil.isStringEmpty(plan.getContent())){
-            throw new CheckSelfException(ExceptionEnum.PLAN_CONTENT_EMPTY_ERROR);
-        }
-        if (plan.getDeadline() == null){
-            throw new CheckSelfException(ExceptionEnum.PLAN_DEADLINE_EMPTY_ERROR);
-        }
-        if (plan.getLevel() == null){
-            throw new CheckSelfException(ExceptionEnum.PLAN_LEVEL_EMPTY_ERROR);
-        }
+//        if (CommonUtil.isStringEmpty(plan.getContent())){
+//            throw new CheckSelfException(ExceptionEnum.PLAN_CONTENT_EMPTY_ERROR);
+//        }
+//        if (plan.getDeadline() == null){
+//            throw new CheckSelfException(ExceptionEnum.PLAN_DEADLINE_EMPTY_ERROR);
+//        }
+//        if (plan.getLevel() == null){
+//            throw new CheckSelfException(ExceptionEnum.PLAN_LEVEL_EMPTY_ERROR);
+//        }
 
         //设置参数
         plan.setPlan_id(UUIDUtil.createUUID());

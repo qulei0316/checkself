@@ -25,11 +25,15 @@ public class PlanController {
     //获取列表
     @PostMapping("/getplanlist")
     public ResultVO getPlanlist(@RequestBody PlanDto planDto , @RequestParam("token")String token){
-        PlanListVO vo = null;
+        PlanListVO vo = new PlanListVO();
         Integer totalSize = planService.getTotalSize(planDto, token);
         List<PlanVO> planVOList = planService.getPlanList(planDto, token);
-        vo.setPlanVOList(planVOList);
-        vo.setTotalSize(totalSize);
+        if (planVOList!=null) {
+            vo.setPlanVOList(planVOList);
+        }
+        if (totalSize!=null) {
+            vo.setTotalSize(totalSize);
+        }
         return ResultVOUtil.success(vo);
     }
 

@@ -23,4 +23,8 @@ public class PlanVO {
     private String status;
 
     private String create_time;
+
+    private Integer update_status;
+
+    private Integer update_level;
 }

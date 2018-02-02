@@ -86,7 +86,7 @@ public class SysUserService {
 
         //新增字典信息
         int j = dictionaryDao.createNewDic(user_id);
-        if(i==0){
+        if(j==0){
             throw new CheckSelfException(ExceptionEnum.DICTIONARY_CREATE_ERROR);
         }
 
