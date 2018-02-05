@@ -33,6 +33,7 @@ public enum PlanLevelEnum {
                 level = planLevelEnum.getLevel();
                 break;
             }
+
         }
         return level;
     }
