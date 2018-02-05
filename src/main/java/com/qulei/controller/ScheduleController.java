@@ -165,31 +165,59 @@ public class ScheduleController {
     public ResultVO updateplanremind(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token) {
         //鉴权
         String user_id = scheduleDto.getUser_id();
-        String cronstr = CommonUtil.timestampToplancron(scheduleDto.getCron());
         if (!authorizeUtil.verify(user_id, token)) {
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
+        String cron = CommonUtil.timestampToplancron(scheduleDto.getCron());
         //查找并修改
         for (Map.Entry<String,RemindJob> entry : planJobs.entrySet()){
             if (entry.getKey().equals(scheduleDto.getPlan_id())){
-                entry.getValue().updateJob(cronstr);
+                entry.getValue().updateJob(cron);
+                planJobs.remove(entry.getKey());
                 break;
             }
         }
         //数据库
         Cron dto = new Cron();
-        dto.setCron_date(scheduleDto.getCron_date());
         dto.setPlan_id(scheduleDto.getPlan_id());
+        dto.setCron_date(scheduleDto.getCron_date());
+        dto.setUser_id(user_id);
         cronService.setCron(dto,token);
         return ResultVOUtil.success();
     }
+
+
+    //停止提醒任务
+    @PostMapping("/cancelplanremind")
+    @Transactional
+    public ResultVO cancelplanremind(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token){
+        //鉴权
+        String user_id = scheduleDto.getUser_id();
+        if (!authorizeUtil.verify(user_id, token)) {
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+        //查找并停止
+        for (Map.Entry<String,RemindJob> entry : planJobs.entrySet()){
+            if (entry.getKey().equals(scheduleDto.getPlan_id())){
+                entry.getValue().stopCron();
+                break;
+            }
+        }
+        //数据库
+        Cron dto = new Cron();
+        dto.setUser_id(scheduleDto.getUser_id());
+        dto.setPlan_id(scheduleDto.getPlan_id());
+        cronService.delete(dto,token);
+        return ResultVOUtil.success();
+    }
+
 
     /**
      * 获取定时任务的信息
      */
     @PostMapping("/getscheduleinfo")
-    public ResultVO getscheduleinfo(@RequestBody ScheduleDto scheduleDto, @RequestParam("token")String token){
-        CronVO vo = cronService.getcron(scheduleDto,token);
+    public ResultVO getscheduleinfo(@RequestBody Cron cron, @RequestParam("token")String token){
+        CronVO vo = cronService.getcron(cron,token);
         return ResultVOUtil.success(vo);
     }
 }

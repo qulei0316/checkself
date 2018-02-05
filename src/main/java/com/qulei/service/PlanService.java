@@ -9,13 +9,13 @@ import com.qulei.common.utils.AuthorizeUtil;
 import com.qulei.common.utils.CommonUtil;
 import com.qulei.common.utils.UUIDUtil;
 import com.qulei.dao.PlanDao;
+import com.qulei.entity.bean.Cron;
 import com.qulei.entity.bean.Plan;
 import com.qulei.entity.dto.PlanDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +26,9 @@ import java.util.List;
 public class PlanService {
 
     private static final Long ONE_DAY_SECOND = 3600*24*1000L;
+
+    @Autowired
+    private CronService cronService;
 
     @Autowired
     private PlanDao planDao;
@@ -70,6 +73,10 @@ public class PlanService {
                 vo.setStatus(PlanStateEnum.getStatusName(plan.getStatus()));
                 vo.setUpdate_level(plan.getLevel());
                 vo.setUpdate_status(plan.getStatus());
+                Cron cron = new Cron();
+                cron.setUser_id(user_id);
+                cron.setPlan_id(plan.getPlan_id());
+                vo.setCronVO(cronService.getcron(cron,token));
                 planVOList.add(vo);
             }
         }

@@ -301,6 +301,9 @@ public class ConsumptionDetailService {
         //获取本月第一天
         Long first_day = CommonUtil.getThismonthFirstDay();
         Double consumption = detailDao.getThisMonthConsumption(first_day,user_id);
+        if(consumption==null){
+            consumption=0d;
+        }
         Double standard = dictionaryDao.getDictionaryNum(DictionaryCodeEnum.CONSUMP_MONTHLY_STANDARD.getDic_code(),user_id);
         Double surplus = standard - consumption;
         vo.setConsumption(consumption);

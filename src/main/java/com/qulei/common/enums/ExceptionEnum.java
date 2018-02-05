@@ -55,6 +55,7 @@ public enum ExceptionEnum {
     CRON_EDIT_ERROR(1,"定时数据更新失败"),
     CRON_GET_ERROR(1,"定时数据查询失败" ),
     CRON_INSERT_ERROR(11,"定时信息初始化失败" ),
+    DELETE_CRON_ERROR(1,"删除失败" ),
 
     //字典模块
     DICTIONARY_SET_ERROR(1,"设置字典值失败" ),

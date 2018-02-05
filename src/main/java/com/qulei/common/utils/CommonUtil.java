@@ -147,4 +147,20 @@ public class CommonUtil {
         return cron;
     }
 
+
+
+    /**
+     * 时间戳转化为cron（几月几号几十几点几分）
+     * @param cron
+     * @return
+     */
+    public static String timestampToplancron(Long cron) {
+        String str = stampToTime(cron);
+        String[] strings = str.split(" ");
+        String s1 = strings[0];
+        String s2 = strings[1];
+        String[] strings1 = s1.split("-");
+        String[] strings2 = s2.split(":");
+        return strings2[2]+" "+strings2[1]+" "+strings2[0]+" "+strings1[2]+" "+strings1[1]+" "+strings1[0];
+    }
 }

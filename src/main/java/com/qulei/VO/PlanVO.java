@@ -1,5 +1,6 @@
 package com.qulei.VO;
 
+import com.qulei.entity.bean.Cron;
 import lombok.Data;
 
 /**
@@ -27,4 +28,6 @@ public class PlanVO {
     private Integer update_status;
 
     private Integer update_level;
+
+    private CronVO cronVO;
 }

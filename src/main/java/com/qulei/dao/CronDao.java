@@ -13,4 +13,8 @@ public interface CronDao {
     Cron getCron(Cron cron);
 
     int updateCron(Cron cron);
+
+    int addCron(Cron cron);
+
+    int deleteCron(Cron dto);
 }

@@ -48,42 +48,66 @@ public class CronService {
      * @return
      */
     @Transactional
-    public CronVO getcron(ScheduleDto dto, String token){
+    public CronVO getcron(Cron dto, String token){
         CronVO vo = new CronVO();
         //鉴权
         String user_id = dto.getUser_id();
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
-        Cron cronDto = new Cron();
-        cronDto.setUser_id(user_id);
-        cronDto.setRemind_type(dto.getType());
-        Cron cron = cronDao.getCron(cronDto);
-        if (cron==null){
-            throw new CheckSelfException(ExceptionEnum.CRON_GET_ERROR);
+        Cron cron = cronDao.getCron(dto);
+        if (cron !=null) {
+            vo.setCron(cron.getCron_date());
+            vo.setUpdate_cron(cron.getCron_date());
+            if (cron.getRemind_method()!=null) {
+                vo.setUpdate_method(cron.getRemind_method());
+                vo.setMethod(cron.getRemind_method());
+            }
+            vo.setStatus(cron.getStatus());
+            vo.setUpdate_status(cron.getStatus());
+            if (cron.getStatus() == 1){
+                vo.setIsplan_remind(true);
+            }else {
+                vo.setIsplan_remind(false);
+            }
         }
-        vo.setCron(cron.getCron_date());
-        vo.setMethod(cron.getRemind_method());
-        vo.setStatus(cron.getStatus());
         return vo;
     }
 
 
     /**
      * 新增cron
-     * @param dto
+     * @param cron
      * @param token
      */
     @Transactional
-    public void addCron(Cron dto, String token) {
+    public void addCron(Cron cron, String token) {
         //鉴权
         String user_id = cron.getUser_id();
         if (!authorizeUtil.verify(user_id,token)){
             throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
         }
-        int i = cronDao.addCron(dto);
+        int i = cronDao.addCron(cron);
         if (i==0){
             throw new CheckSelfException(ExceptionEnum.CRON_EDIT_ERROR);
+        }
+    }
+
+    /**
+     * 删除
+     * @param dto
+     * @param token
+     */
+    @Transactional
+    public void delete(Cron dto, String token) {
+        //鉴权
+        String user_id = dto.getUser_id();
+        if (!authorizeUtil.verify(user_id,token)){
+            throw new CheckSelfException(ExceptionEnum.AUTHORIZE_FAIL);
+        }
+        int i = cronDao.deleteCron(dto);
+        if (i==0){
+            throw new CheckSelfException(ExceptionEnum.DELETE_CRON_ERROR);
         }
     }
 }
