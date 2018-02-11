@@ -144,6 +144,7 @@ public class ScheduleController {
         //选择调用的方法
         Integer type = RemindTypeEnum.PLAN_REMIND.getCode();
         job.setType(type);
+        job.setPlan_id(scheduleDto.getPlan_id());
         job.startJob(cron,user_id);
         planJobs.put(scheduleDto.getPlan_id(),job);
         //数据库

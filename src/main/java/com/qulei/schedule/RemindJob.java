@@ -5,10 +5,7 @@ import com.qulei.common.exception.CheckSelfException;
 import com.qulei.common.utils.CommonUtil;
 import com.qulei.common.utils.MailUtil;
 import com.qulei.dao.*;
-import com.qulei.entity.bean.ConsumptionDaily;
-import com.qulei.entity.bean.ConsumptionMonthly;
-import com.qulei.entity.bean.Dictionary;
-import com.qulei.entity.bean.SysUser;
+import com.qulei.entity.bean.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
@@ -36,6 +33,9 @@ public class RemindJob {
     private DictionaryDao dictionaryDao;
 
     @Autowired
+    private PlanDao planDao;
+
+    @Autowired
     private ConsumptionDetailDao detailDao;
 
     @Autowired
@@ -55,9 +55,15 @@ public class RemindJob {
 
     private Integer method;
 
+    private String plan_id;
+
     private Integer type;
 
     private String user_id;
+
+    public void setPlan_id(String plan_id) {
+        this.plan_id = plan_id;
+    }
 
     public Integer getType() {
         return type;
@@ -110,7 +116,11 @@ public class RemindJob {
 
             @Override
             public void run() {
-
+                try {
+                    domethod(method,type,user_id,plan_id);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, new Trigger() {
             @Override
@@ -132,17 +142,25 @@ public class RemindJob {
     }
 
     //方法选择器
-    public void domethod(Integer method,Integer type,String user_id) throws Exception {
+    public void domethod(Integer method,Integer type,String user_id,String plan_id) throws Exception {
         if (type == RemindTypeEnum.DAILY_REMIND.getCode()){
             if (method == RemindMethodEnum.EMAIL.getCode()){
                 dailyRemindByMail(user_id);
             }else if (method == RemindMethodEnum.PAGE.getCode()){
 
             }
+        }else if (type == RemindTypeEnum.MONTHLY_REMIND.getCode()){
+            if (method == RemindMethodEnum.EMAIL.getCode()){
+                monthlyRemindByMail(user_id);
+            }else if (method == RemindMethodEnum.PAGE.getCode()){
+
+            }
+        }else if (type == RemindTypeEnum.PLAN_REMIND.getCode()){
+            planRemindBymail(user_id,plan_id);
         }
     }
 
-    //发送邮件
+    //发送邮件（日消费）
     public void dailyRemindByMail(String user_id) throws Exception {
         //查询用户邮箱
         SysUser sysUser = sysUserDao.getSysUserByUserid(user_id);
@@ -171,6 +189,7 @@ public class RemindJob {
     }
 
 
+    //月消费邮件
     public void monthlyRemindByMail(String user_id) throws Exception {
         //查询用户邮箱
         SysUser sysUser = sysUserDao.getSysUserByUserid(user_id);
@@ -192,4 +211,27 @@ public class RemindJob {
         String text = "上个月度总消费:"+monthly.getExpense()+",超标金额:"+String.valueOf(over);
         mailUtil.sendSimpleMail(sysUser.getMail(),subject,text);
     }
+
+
+    //计划提醒
+    public void planRemindBymail(String user_id,String plan_id) throws Exception{
+        //查询用户邮箱
+        SysUser sysUser = sysUserDao.getSysUserByUserid(user_id);
+        if (sysUser == null){
+            throw new CheckSelfException(ExceptionEnum.ACTIVE_NOTFOUND_ERROR);
+        }
+
+        //查询计划信息
+        Plan dto = new Plan();
+        dto.setPlan_id(plan_id);
+        Plan plan = planDao.getPlan(dto);
+        String subject = "任务提醒";
+        String day = CommonUtil.stampToTime(plan.getDeadline());
+        String name = plan.getPlan_name();
+        String text = "您有一个任务即将到期，任务名称:"+name+",到期时间:"+day;
+        //发送邮件
+        mailUtil.sendSimpleMail(sysUser.getMail(),subject,text);
+    }
+
+
 }
